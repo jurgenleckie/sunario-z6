@@ -6,7 +6,7 @@ export default function Home() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <div className="relative w-full min-h-screen bg-white flex flex-col" style={{ fontFamily: 'Inter, sans-serif' }}>
+    <div className="relative w-full min-h-screen bg-white flex flex-col max-w-[600px] mx-auto" style={{ fontFamily: 'Inter, sans-serif' }}>
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
         <Link href="/location" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Location
@@ -22,7 +22,7 @@ export default function Home() {
         </Link>
       </div>
 
-      <div className="flex flex-col items-center pt-5 pb-0 px-5 flex-1">
+      <div className="flex flex-col items-center pt-5 pb-0 px-4 sm:px-6 flex-1">
         <div className="flex flex-col items-start gap-10 w-full max-w-[342px] py-3 flex-1">
           {/* Header */}
           <div className="flex flex-row justify-end items-center w-full h-10" style={{ padding: '12px' }}>

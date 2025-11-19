@@ -12,13 +12,11 @@ export default function LocationPage() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          // Store location in localStorage
           localStorage.setItem('userLocation', JSON.stringify({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             timestamp: Date.now()
           }))
-          // Navigate to random page after getting location
           router.push('/random')
         },
         (error) => {
@@ -40,8 +38,11 @@ export default function LocationPage() {
         minHeight: '100vh',
         padding: '24px',
         background: '#FFFFFF',
-        overflowY: 'scroll'
+        overflowY: 'scroll',
+        maxWidth: '600px',
+        margin: '0 auto'
       }}
+      className="px-4 sm:px-6"
     >
       <div style={{ position: 'fixed', bottom: '16px', right: '16px', zIndex: 50, display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <Link href="/location" style={{ padding: '4px 12px', background: '#1f2937', color: 'white', fontSize: '12px', borderRadius: '4px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
@@ -56,6 +57,12 @@ export default function LocationPage() {
         <Link href="/random" style={{ padding: '4px 12px', background: '#2563eb', color: 'white', fontSize: '12px', borderRadius: '4px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
           Random
         </Link>
+        <button 
+          onClick={() => window.toggleDeviceFrame?.()} 
+          style={{ padding: '4px 12px', background: '#9333ea', color: 'white', fontSize: '12px', borderRadius: '4px', cursor: 'pointer', border: 'none', whiteSpace: 'nowrap' }}
+        >
+          Show in device
+        </button>
       </div>
 
       {/* Content Card */}

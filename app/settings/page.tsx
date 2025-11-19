@@ -223,7 +223,7 @@ export default function SettingsPage() {
 
   return (
     <div 
-      className={`min-h-screen bg-[#EEEEEE] flex flex-col overflow-y-auto ${
+      className={`min-h-screen bg-[#EEEEEE] flex flex-col overflow-y-auto max-w-[600px] mx-auto ${
         isSlideOut ? 'animate-slide-out' : 'animate-slide-in'
       }`}
     >
@@ -330,7 +330,7 @@ export default function SettingsPage() {
         }
       `}</style>
 
-      <div className="flex flex-col px-5 pb-0 flex-1" style={{ paddingTop: '36px' }}>
+      <div className="flex flex-col px-3 sm:px-5 pb-0 flex-1" style={{ paddingTop: '36px' }}>
         <div className="max-w-[350px] mx-auto w-full flex flex-col gap-6 flex-1">
           <div className="flex items-center justify-between" style={{ height: '40px', padding: '12px 0' }}>
             <button onClick={handleBack} className="flex items-center justify-center w-8 h-10">
@@ -356,7 +356,7 @@ export default function SettingsPage() {
                     <span className="text-[15px] font-semibold leading-[19px] text-[#424242] text-left">Minimum shift</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[15px] font-medium leading-[19px] text-[#424242]">{minimumShift}C</span>
+                    <span className="text-[15px] font-medium leading-[19px] text-[#424242]">{minimumShift}</span>
                     <ChevronRight className="w-5 h-5 text-[#BDBDBD]" strokeWidth={2} />
                   </div>
                 </button>
