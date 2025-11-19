@@ -1,69 +1,133 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 export default function ShiftPage() {
   const currentYear = new Date().getFullYear()
   const [activeTab, setActiveTab] = useState(1)
-  const [isExpanded, setIsExpanded] = useState(false)
+  
+  const [isExpanded, setIsExpanded] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('shiftExpandedState')
+      return saved === 'true'
+    }
+    return false
+  })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('shiftExpandedState', String(isExpanded))
+    }
+  }, [isExpanded])
+
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded)
+  }
 
   const shiftData = {
     1: {
-      type: 'rise',
-      temp: '9°',
-      label: 'rise',
-      status: 'happening',
-      collapsed: 'thu 8° → sun 17°',
-      expanded: 'This rise starts today: Thursday evening (8°) → Sunday midday (17°)',
-      bgColor: '#FEDADA',
-      inactiveBtnColor: '#FEEFEF',
-      statusColor: '#FC8888'
-    },
-    2: {
-      type: 'rise',
-      temp: '13°',
-      label: 'rise',
-      status: 'happening',
-      collapsed: 'mon 15° → wed 28°',
-      expanded: 'This rise starts in 4 days: Monday evening (15°) → Wednesday evening (28°)',
-      bgColor: '#FEDADA',
-      inactiveBtnColor: '#FEEFEF',
-      statusColor: '#FC8888'
-    },
-    3: {
       type: 'drop',
-      temp: '21°',
+      temp: '27°',
       label: 'drop',
-      status: 'happening',
-      collapsed: 'thu 28° → sat 7°',
-      expanded: 'This drop starts in 6 days: Thursday evening (28°) → Saturday evening (7°)',
+      status: 'coming',
+      collapsed: 'Wed 28° → Sat 1°',
+      expanded: 'This drop starts in 2 days: Wednesday evening (28°) → Saturday evening (1°)',
       bgColor: '#DAEDF7',
       inactiveBtnColor: '#EAF5FE',
       statusColor: '#6DB3E0'
     }
   }
 
+  const totalShifts = Object.keys(shiftData).length
+
   const currentShift = shiftData[activeTab as keyof typeof shiftData] || shiftData[1]
 
-  const TabButton = ({ number, isActive, bgColor }: { number: number; isActive: boolean; bgColor: string }) => (
-    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="56" height="56" rx="14" fill={isActive ? 'white' : bgColor}/>
-      <text 
-        x="28" 
-        y="32" 
-        dominantBaseline="middle" 
-        textAnchor="middle" 
-        fill={isActive ? '#424242' : '#757575'} 
-        fontFamily="Inter" 
-        fontWeight={isActive ? '700' : '600'} 
-        fontSize="22" 
-        letterSpacing="-0.02em"
-      >
-        {number}
-      </text>
-    </svg>
-  )
+  const TabButton = ({ number, isActive, bgColor }: { number: number; isActive: boolean; bgColor: string }) => {
+    const imageStyle = {
+      width: '56px',
+      height: '56px',
+      minWidth: '56px',
+      minHeight: '56px',
+      maxWidth: '56px',
+      maxHeight: '56px',
+      objectFit: 'cover' as const,
+      flexShrink: 0
+    }
+    
+    const isDropPage = currentShift.type === 'drop'
+    
+    if (number === 1) {
+      if (isActive) {
+        return (
+          <img 
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Zr6B3JKi6U113ZHSzGvkLproTLGjZH.png" 
+            alt="1" 
+            style={imageStyle}
+          />
+        )
+      } else {
+        return (
+          <img 
+            src={isDropPage 
+              ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-SmDvCEq9sCwFaLxEwbk0ILZ0QzsEkR.png"
+              : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-K5HVXVTvBUaQtMndgQCKix8OGIqgMh.png"
+            }
+            alt="1" 
+            style={imageStyle}
+          />
+        )
+      }
+    }
+    
+    if (number === 2) {
+      if (isActive) {
+        return (
+          <img 
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-iGCZZRwMaXdypfC7vWWJNVDujVHJlQ.png" 
+            alt="2" 
+            style={imageStyle}
+          />
+        )
+      } else {
+        return (
+          <img 
+            src={isDropPage
+              ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-L3cpQpp9E62ieuYhOHHl4y7ytKXhOz.png"
+              : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Ze7X4lFAW0OazdNq6aZE8MRyge3Ubw.png"
+            }
+            alt="2" 
+            style={imageStyle}
+          />
+        )
+      }
+    }
+    
+    if (number === 3) {
+      if (isActive) {
+        return (
+          <img 
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-sPjOq6FnHP7NTIlRp0oJpZuCSwfRgH.png" 
+            alt="3" 
+            style={imageStyle}
+          />
+        )
+      } else {
+        return (
+          <img 
+            src={isDropPage
+              ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-sgsiswJ9J6z66Y0B7Qj0h5UeKUz1gI.png"
+              : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JwxjWWp1XkR9n0AyOXHSBzT0dgeNzk.png"
+            }
+            alt="3" 
+            style={imageStyle}
+          />
+        )
+      }
+    }
+    
+    return null
+  }
 
   const Arrow = () => (
     <svg 
@@ -105,7 +169,6 @@ export default function ShiftPage() {
         </defs>
       </svg>
 
-      {/* Test Navigation Links */}
       <div className="fixed top-2 left-2 z-50 flex gap-2">
         <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
           No shifts
@@ -116,9 +179,12 @@ export default function ShiftPage() {
         <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
           Settings
         </Link>
+        <Link href="/random" className="px-3 py-1 bg-blue-600 text-white text-xs rounded">
+          Random
+        </Link>
       </div>
 
-      <div className="w-full flex flex-col items-center pt-5 pb-0 px-5 flex-1">
+      <div className="w-full flex flex-col items-center pt-5 px-5 flex-1">
         <div 
           className="flex flex-col justify-between items-start"
           style={{
@@ -129,9 +195,7 @@ export default function ShiftPage() {
             flex: 1
           }}
         >
-          {/* Header */}
           <div className="flex flex-row justify-between items-center w-full">
-            {/* Location and time */}
             <div className="flex flex-col justify-center items-start gap-0">
               <p style={{
                 fontFamily: 'Inter',
@@ -155,7 +219,6 @@ export default function ShiftPage() {
               </p>
             </div>
 
-            {/* Settings icon */}
             <Link href="/settings">
               <button 
                 className="flex items-center justify-center w-10 h-10 rounded-full"
@@ -168,35 +231,44 @@ export default function ShiftPage() {
             </Link>
           </div>
 
-          {/* Main Content */}
           <div className="flex flex-col items-start gap-7 w-full flex-1 justify-end">
-            <div className="flex flex-row items-center" style={{ gap: '8px' }}>
-              {[1, 2, 3].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  style={{
-                    width: '56px',
-                    height: '56px',
-                    padding: 0,
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <TabButton number={tab} isActive={activeTab === tab} bgColor={currentShift.inactiveBtnColor} />
-                </button>
-              ))}
-            </div>
+            {totalShifts > 1 && (
+              <div className="flex flex-row items-center" style={{ gap: '10px', marginBottom: '12px', paddingLeft: '4px' }}>
+                {Object.keys(shiftData).map((key) => {
+                  const tab = parseInt(key)
+                  return (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      style={{
+                        width: '56px',
+                        height: '56px',
+                        minWidth: '56px',
+                        minHeight: '56px',
+                        maxWidth: '56px',
+                        maxHeight: '56px',
+                        padding: 0,
+                        border: 'none',
+                        background: 'transparent',
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                        overflow: 'hidden'
+                      }}
+                    >
+                      <TabButton number={tab} isActive={activeTab === tab} bgColor={currentShift.inactiveBtnColor} />
+                    </button>
+                  )
+                })}
+              </div>
+            )}
 
             <div className="flex flex-col items-start gap-4 w-full">
-              {/* Big Number and Label */}
-              <div className="flex flex-row items-baseline">
+              <div className="flex flex-row items-baseline" style={{ marginBottom: '0px' }}>
                 <span style={{
                   fontFamily: 'Inter',
                   fontWeight: 500,
                   fontSize: '140px',
-                  lineHeight: '169px',
+                  lineHeight: '140px',
                   letterSpacing: '-0.09em',
                   color: '#424242',
                   marginRight: '-38px'
@@ -215,39 +287,50 @@ export default function ShiftPage() {
                 </span>
               </div>
 
-              {/* Explanation */}
-              <div className="flex flex-row justify-between items-end w-full" style={{ padding: '0 4px', gap: '16px' }}>
-                <div className="flex flex-col items-start" style={{ gap: '0px', flex: 1 }}>
+              <div className="flex flex-row justify-between items-end w-full" style={{ padding: '0 4px', gap: '16px', marginTop: '4px' }}>
+                <div className="flex flex-col items-start" style={{ gap: '0px', flex: 1, paddingLeft: '4px' }}>
                   <p style={{
                     fontFamily: 'Inter',
                     fontWeight: 700,
                     fontSize: '24px',
                     lineHeight: '26px',
                     letterSpacing: '-0.02em',
-                    color: currentShift.statusColor
+                    color: currentShift.statusColor,
+                    marginBottom: '0px'
                   }}>
                     {currentShift.status}
                   </p>
-                  <p style={{
-                    fontFamily: 'Inter',
-                    fontWeight: 700,
-                    fontSize: '24px',
-                    lineHeight: '30px',
-                    letterSpacing: '-0.03em',
-                    color: '#424242'
+                  <div style={{
+                    overflow: 'hidden',
+                    transition: 'max-height 500ms cubic-bezier(0.4, 0, 0.2, 1), opacity 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    maxHeight: isExpanded ? '200px' : '30px',
+                    opacity: 1
                   }}>
-                    {renderTextWithArrow(isExpanded ? currentShift.expanded : currentShift.collapsed)}
-                  </p>
+                    <p style={{
+                      fontFamily: 'Inter',
+                      fontWeight: 700,
+                      fontSize: '24px',
+                      lineHeight: '30px',
+                      letterSpacing: '-0.03em',
+                      color: '#424242',
+                      marginTop: '0px'
+                    }}>
+                      {renderTextWithArrow(isExpanded ? currentShift.expanded : currentShift.collapsed)}
+                    </p>
+                  </div>
                 </div>
 
                 <button
-                  onClick={() => setIsExpanded(!isExpanded)}
+                  onClick={toggleExpanded}
                   className="flex items-center justify-center flex-shrink-0"
                   style={{
                     width: '36px',
                     height: '36px',
-                    background: currentShift.inactiveBtnColor,
-                    borderRadius: '8px'
+                    background: currentShift.type === 'rise' ? '#FEEFEF' : '#EAF5FE',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: 0,
+                    cursor: 'pointer'
                   }}
                 >
                   <svg 
@@ -257,8 +340,8 @@ export default function ShiftPage() {
                     fill="none" 
                     xmlns="http://www.w3.org/2000/svg"
                     style={{
-                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 300ms ease-in-out'
+                      transform: isExpanded ? 'rotate(0deg)' : 'rotate(180deg)',
+                      transition: 'transform 500ms cubic-bezier(0.4, 0, 0.2, 1)'
                     }}
                   >
                     <path 
@@ -275,8 +358,7 @@ export default function ShiftPage() {
           </div>
         </div>
 
-        {/* Copyright - now outside the colored card */}
-        <div className="flex flex-row justify-center items-center w-full py-6">
+        <div className="py-6 text-center w-full">
           <p style={{
             fontFamily: 'Inter',
             fontWeight: 400,

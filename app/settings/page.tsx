@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -72,19 +72,122 @@ function IOSPicker({ isOpen, onClose, options, selectedValue, onSelect, title }:
 export default function SettingsPage() {
   const router = useRouter()
   const [isSlideOut, setIsSlideOut] = useState(false)
-  const [showRisingShifts, setShowRisingShifts] = useState(true)
-  const [showDroppingShifts, setShowDroppingShifts] = useState(false)
-  const [includeDayTemps, setIncludeDayTemps] = useState(true)
-  const [includeNightTemps, setIncludeNightTemps] = useState(true)
+  
+  const [showRisingShifts, setShowRisingShifts] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('showRisingShifts')
+      return saved !== null ? saved === 'true' : true
+    }
+    return true
+  })
+  
+  const [showDroppingShifts, setShowDroppingShifts] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('showDroppingShifts')
+      return saved !== null ? saved === 'true' : false
+    }
+    return false
+  })
+  
+  const [includeDayTemps, setIncludeDayTemps] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('includeDayTemps')
+      return saved !== null ? saved === 'true' : true
+    }
+    return true
+  })
+  
+  const [includeNightTemps, setIncludeNightTemps] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('includeNightTemps')
+      return saved !== null ? saved === 'true' : true
+    }
+    return true
+  })
 
-  const [minimumShift, setMinimumShift] = useState('12°')
-  const [showShiftsIn, setShowShiftsIn] = useState('2 days')
-  const [lookAhead, setLookAhead] = useState('7 days')
-  const [tempUnit, setTempUnit] = useState('Auto (°C)')
+  const [minimumShift, setMinimumShift] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('minimumShift')
+      return saved || '12°'
+    }
+    return '12°'
+  })
+  
+  const [showShiftsIn, setShowShiftsIn] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('showShiftsIn')
+      return saved || '2 days'
+    }
+    return '2 days'
+  })
+  
+  const [lookAhead, setLookAhead] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('lookAhead')
+      return saved || '7 days'
+    }
+    return '7 days'
+  })
+  
+  const [tempUnit, setTempUnit] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('tempUnit')
+      return saved || 'Auto (°C)'
+    }
+    return 'Auto (°C)'
+  })
   
   const [openPicker, setOpenPicker] = useState<string | null>(null)
 
   const [animatingToggle, setAnimatingToggle] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('showRisingShifts', String(showRisingShifts))
+    }
+  }, [showRisingShifts])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('showDroppingShifts', String(showDroppingShifts))
+    }
+  }, [showDroppingShifts])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('includeDayTemps', String(includeDayTemps))
+    }
+  }, [includeDayTemps])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('includeNightTemps', String(includeNightTemps))
+    }
+  }, [includeNightTemps])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('minimumShift', minimumShift)
+    }
+  }, [minimumShift])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('showShiftsIn', showShiftsIn)
+    }
+  }, [showShiftsIn])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lookAhead', lookAhead)
+    }
+  }, [lookAhead])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('tempUnit', tempUnit)
+    }
+  }, [tempUnit])
 
   const minimumShiftOptions = Array.from({ length: 26 }, (_, i) => `${i + 5}°`)
   const showShiftsInOptions = [
@@ -133,6 +236,9 @@ export default function SettingsPage() {
         </Link>
         <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
           Settings
+        </Link>
+        <Link href="/random" className="px-3 py-1 bg-blue-600 text-white text-xs rounded">
+          Random
         </Link>
       </div>
 

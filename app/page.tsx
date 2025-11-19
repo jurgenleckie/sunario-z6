@@ -17,6 +17,9 @@ export default function Home() {
         <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
           Settings
         </Link>
+        <Link href="/random" className="px-3 py-1 bg-blue-600 text-white text-xs rounded">
+          Random
+        </Link>
       </div>
 
       <div className="flex flex-col items-center pt-5 pb-0 px-5 flex-1">
