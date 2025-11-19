@@ -463,7 +463,7 @@ export default function RandomPage() {
             </div>
           </div>
 
-          <div className="flex flex-row justify-center items-center w-full py-6">
+          <div className="py-6 text-center w-full">
             <p style={{ 
               fontFamily: 'Inter, sans-serif',
               fontWeight: 400,
@@ -476,17 +476,6 @@ export default function RandomPage() {
             </p>
           </div>
         </div>
-
-        <style jsx>{`
-          @keyframes spin {
-            from {
-              transform: rotate(0deg);
-            }
-            to {
-              transform: rotate(360deg);
-            }
-          }
-        `}</style>
       </div>
     )
   }
