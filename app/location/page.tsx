@@ -50,9 +50,6 @@ export default function LocationPage() {
         <Link href="/" style={{ padding: '4px 12px', background: '#1f2937', color: 'white', fontSize: '12px', borderRadius: '4px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
           No shifts
         </Link>
-        <Link href="/shift" style={{ padding: '4px 12px', background: '#1f2937', color: 'white', fontSize: '12px', borderRadius: '4px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
-          Shift page
-        </Link>
         <Link href="/settings" style={{ padding: '4px 12px', background: '#1f2937', color: 'white', fontSize: '12px', borderRadius: '4px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
           Settings
         </Link>

@@ -383,9 +383,6 @@ export default function RandomPage() {
           <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
             No shifts
           </Link>
-          <Link href="/shift" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
-            Shift page
-          </Link>
           <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
             Settings
           </Link>
@@ -515,9 +512,6 @@ export default function RandomPage() {
         </Link>
         <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           No shifts
-        </Link>
-        <Link href="/shift" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
-          Shift page
         </Link>
         <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Settings
