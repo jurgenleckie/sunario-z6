@@ -7,17 +7,20 @@ export default function Home() {
 
   return (
     <div className="relative w-full min-h-screen bg-white flex flex-col" style={{ fontFamily: 'Inter, sans-serif' }}>
-      <div className="fixed top-2 left-2 z-50 flex gap-2">
-        <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+        <Link href="/location" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
+          Location
+        </Link>
+        <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           No shifts
         </Link>
-        <Link href="/shift" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
+        <Link href="/shift" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Shift page
         </Link>
-        <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
+        <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Settings
         </Link>
-        <Link href="/random" className="px-3 py-1 bg-blue-600 text-white text-xs rounded">
+        <Link href="/random" className="px-3 py-1 bg-blue-600 text-white text-xs rounded whitespace-nowrap">
           Random
         </Link>
       </div>

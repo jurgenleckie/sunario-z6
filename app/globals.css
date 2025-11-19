@@ -132,3 +132,13 @@
     border-radius: 30%;
   }
 }
+
+/* Hide scrollbar while maintaining scroll functionality */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

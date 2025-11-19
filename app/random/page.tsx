@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 // Random giphy GIFs for no shifts screen
 const giphyGifs = [
@@ -118,6 +119,7 @@ function generateRandomShifts() {
 }
 
 export default function RandomPage() {
+  const router = useRouter()
   const [shifts, setShifts] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState(1)
@@ -129,6 +131,87 @@ export default function RandomPage() {
     return false
   })
   const currentYear = new Date().getFullYear()
+
+  const [pullDistance, setPullDistance] = useState(0)
+  const [isPulling, setIsPulling] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [startY, setStartY] = useState(0)
+
+  const handleStart = (clientY: number) => {
+    if (window.scrollY === 0) {
+      setStartY(clientY)
+      setIsPulling(true)
+    }
+  }
+
+  const handleMove = (clientY: number) => {
+    if (!isPulling || isRefreshing) return
+    
+    const distance = Math.max(0, clientY - startY)
+    
+    if (distance > 0) {
+      setPullDistance(Math.min(distance, 200)) // Increased from 120 to 200
+    }
+  }
+
+  const handleEnd = () => {
+    setIsPulling(false)
+    
+    if (pullDistance > 100 && !isRefreshing) {
+      setPullDistance(52)
+      setIsRefreshing(true)
+      
+      setTimeout(() => {
+        handleRegenerate()
+        setIsRefreshing(false)
+        setPullDistance(0)
+      }, 1500)
+    } else {
+      setPullDistance(0)
+    }
+  }
+
+  // Touch events
+  const handleTouchStart = (e: React.TouchEvent) => {
+    handleStart(e.touches[0].clientY)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    handleMove(e.touches[0].clientY)
+  }
+
+  const handleTouchEnd = () => {
+    handleEnd()
+  }
+
+  // Mouse events
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button, a')) return
+    handleStart(e.clientY)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isPulling) {
+      e.preventDefault()
+      handleMove(e.clientY)
+    }
+  }
+
+  const handleMouseUp = () => {
+    if (isPulling) {
+      handleEnd()
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (isPulling) {
+      handleEnd()
+    }
+  }
+
+  const refreshIconOpacity = isRefreshing ? 1 : Math.min(pullDistance / 100, 1)
+  const refreshIconRotation = isRefreshing ? 'spin' : `${pullDistance * 3}deg`
+  const refreshIconTop = '24px' // Keep icon at 24px from top always
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -171,7 +254,7 @@ export default function RandomPage() {
       if (isActive) {
         return (
           <img 
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Zr6B3JKi6U113ZHSzGvkLproTLGjZH.png" 
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-WneXHXX6CNf3YpZxe5uX3qsd5lyjia.png" 
             alt="1" 
             style={imageStyle}
           />
@@ -180,8 +263,8 @@ export default function RandomPage() {
         return (
           <img 
             src={isDropPage 
-              ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-SmDvCEq9sCwFaLxEwbk0ILZ0QzsEkR.png"
-              : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-K5HVXVTvBUaQtMndgQCKix8OGIqgMh.png"
+              ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-CL4tNIZoxmxEeGJ9q7EhbQhjttQdkR.png"
+              : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-SgbiXcdryaIqbKcN7vJTmougHlF9PR.png"
             }
             alt="1" 
             style={imageStyle}
@@ -194,7 +277,7 @@ export default function RandomPage() {
       if (isActive) {
         return (
           <img 
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-iGCZZRwMaXdypfC7vWWJNVDujVHJlQ.png" 
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-PsQ3qikLu8mkAsAin9sI1Dtq63LWV5.png" 
             alt="2" 
             style={imageStyle}
           />
@@ -202,9 +285,9 @@ export default function RandomPage() {
       } else {
         return (
           <img 
-            src={isDropPage
-              ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-L3cpQpp9E62ieuYhOHHl4y7ytKXhOz.png"
-              : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Ze7X4lFAW0OazdNq6aZE8MRyge3Ubw.png"
+            src={isDropPage 
+              ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-SJd1lZv0N8nFXWdTrU6wOwdUk1GZJs.png"
+              : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-mdOwNdsy1fog458S9vs23Cj5FjFsgt.png"
             }
             alt="2" 
             style={imageStyle}
@@ -217,7 +300,7 @@ export default function RandomPage() {
       if (isActive) {
         return (
           <img 
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-sPjOq6FnHP7NTIlRp0oJpZuCSwfRgH.png" 
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-vxqwwnouXBP0JwTiITq1gDbfcP7kTw.png" 
             alt="3" 
             style={imageStyle}
           />
@@ -225,9 +308,9 @@ export default function RandomPage() {
       } else {
         return (
           <img 
-            src={isDropPage
-              ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-sgsiswJ9J6z66Y0B7Qj0h5UeKUz1gI.png"
-              : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JwxjWWp1XkR9n0AyOXHSBzT0dgeNzk.png"
+            src={isDropPage 
+              ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hlltwd1VNBR5jAhMXPzJogXTXOzCrT.png"
+              : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-5iK7V8H5nCZZluO21ifDvza14KxfW1.png"
             }
             alt="3" 
             style={imageStyle}
@@ -282,29 +365,82 @@ export default function RandomPage() {
     const randomGif = giphyGifs[Math.floor(Math.random() * giphyGifs.length)]
     
     return (
-      <div className="relative w-full min-h-screen bg-white flex flex-col" style={{ fontFamily: 'Inter, sans-serif' }}>
-        <div className="fixed top-2 left-2 z-50 flex gap-2">
-          <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
+      <div 
+        className="relative w-full min-h-screen bg-white flex flex-col" 
+        style={{ fontFamily: 'Inter, sans-serif' }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+          <Link href="/location" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
+            Location
+          </Link>
+          <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
             No shifts
           </Link>
-          <Link href="/shift" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
+          <Link href="/shift" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
             Shift page
           </Link>
-          <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
+          <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
             Settings
           </Link>
-          <button onClick={handleRegenerate} className="px-3 py-1 bg-blue-600 text-white text-xs rounded">
+          <button onClick={handleRegenerate} className="px-3 py-1 bg-blue-600 text-white text-xs rounded whitespace-nowrap">
             Random
           </button>
         </div>
 
-        <div className="flex flex-col items-center pt-5 pb-0 px-5 flex-1">
-          <div className="flex flex-col items-start gap-10 w-full max-w-[342px] py-3 flex-1">
-            <div className="flex flex-row justify-end items-center w-full h-10" style={{ padding: '12px' }}>
+        <div 
+          style={{
+            position: 'absolute',
+            top: refreshIconTop,
+            left: '50%',
+            transform: 'translateX(-50%) translateZ(0)',
+            opacity: refreshIconOpacity,
+            zIndex: 10,
+            transition: isRefreshing ? 'opacity 0.5s ease-out, top 0.5s ease-out' : (isPulling ? 'none' : 'opacity 0.5s ease-out, top 0.5s ease-out'),
+            width: '24px',
+            height: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            willChange: 'opacity',
+          }}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            style={{
+              transform: refreshIconRotation === 'spin' ? undefined : `rotate(${refreshIconRotation})`,
+              transformOrigin: 'center center',
+              willChange: 'transform',
+              animation: refreshIconRotation === 'spin' ? 'spin 1s linear infinite' : undefined,
+            }}
+          >
+            <circle cx="12" cy="12" r="10" fill="none" stroke="#424242" strokeWidth="3" strokeDasharray="8 4" strokeLinecap="round" />
+          </svg>
+        </div>
+
+        <div 
+          className="flex flex-col items-center pt-5 pb-0 px-5 flex-1"
+          style={{
+            transform: `translateY(${pullDistance}px)`,
+            transition: isPulling ? 'none' : 'transform 0.5s ease-out',
+          }}
+        >
+          <div 
+            className="flex flex-col items-start gap-10 w-full max-w-[342px] py-3 flex-1"
+          >
+            <div className="flex flex-row justify-end items-center w-full" style={{ padding: '12px' }}>
               <Link href="/settings">
                 <button className="flex items-center justify-center w-10 h-10 rounded-full" style={{ filter: 'drop-shadow(0px 0px 22px rgba(0, 0, 0, 0.06))' }}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 8L15 8M15 8C15 9.65686 16.3431 11 18 11C19.6569 11 21 9.65685 21 8C21 6.34315 19.6569 5 18 5C16.3431 5 15 6.34315 15 8ZM9 16L21 16M9 16C9 17.6569 7.65685 19 6 19C4.34315 19 3 17.6569 3 16C3 14.3431 4.34315 13 6 13C7.65685 13 9 14.3431 9 16Z" stroke="#424242" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M3 8L15 8M15 8C15 9.65686 16.3431 11 18 11C19.6569 11 21 9.65685 21 8C21 6.34315 19.6569 5 18 5C16.3431 5 15 6.34315 15 8ZM9 16L21 16M9 16C9 17.6569 7.65685 19 6 19C4.34315 19 3 17.65685 3 16C3 14.3431 4.34315 13 6 13C7.65685 13 9 14.3431 9 16Z" stroke="#424242" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
               </Link>
@@ -343,6 +479,17 @@ export default function RandomPage() {
             </p>
           </div>
         </div>
+
+        <style jsx>{`
+          @keyframes spin {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
       </div>
     )
   }
@@ -351,23 +498,74 @@ export default function RandomPage() {
   const currentShift = shifts[activeTab - 1]
 
   return (
-    <div className="relative w-full min-h-screen overflow-y-auto flex flex-col items-center" style={{ backgroundColor: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}>
-      <div className="fixed top-2 left-2 z-50 flex gap-2">
-        <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
+    <div 
+      className="relative w-full min-h-screen overflow-y-auto flex flex-col items-center" 
+      style={{ backgroundColor: '#FFFFFF', fontFamily: 'Inter, sans-serif' }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+        <Link href="/location" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
+          Location
+        </Link>
+        <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           No shifts
         </Link>
-        <Link href="/shift" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
+        <Link href="/shift" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Shift page
         </Link>
-        <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded">
+        <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Settings
         </Link>
-        <button onClick={handleRegenerate} className="px-3 py-1 bg-blue-600 text-white text-xs rounded">
+        <button onClick={handleRegenerate} className="px-3 py-1 bg-blue-600 text-white text-xs rounded whitespace-nowrap">
           Random
         </button>
       </div>
 
-      <div className="w-full flex flex-col items-center pt-5 px-5 flex-1">
+      <div 
+        style={{
+          position: 'absolute',
+          top: refreshIconTop,
+          left: '50%',
+          transform: 'translateX(-50%) translateZ(0)',
+          opacity: refreshIconOpacity,
+          zIndex: 10,
+          transition: isRefreshing ? 'opacity 0.5s ease-out, top 0.5s ease-out' : (isPulling ? 'none' : 'opacity 0.5s ease-out, top 0.5s ease-out'),
+          width: '24px',
+          height: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          willChange: 'opacity',
+        }}
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          style={{
+            transform: refreshIconRotation === 'spin' ? undefined : `rotate(${refreshIconRotation})`,
+            transformOrigin: 'center center',
+            willChange: 'transform',
+            animation: refreshIconRotation === 'spin' ? 'spin 1s linear infinite' : undefined,
+          }}
+        >
+          <circle cx="12" cy="12" r="10" fill="none" stroke="#424242" strokeWidth="3" strokeDasharray="8 4" strokeLinecap="round" />
+        </svg>
+      </div>
+
+      <div 
+        className="w-full flex flex-col items-center pt-5 px-5 flex-1"
+        style={{
+          transform: `translateY(${pullDistance}px)`,
+          transition: isPulling ? 'none' : 'transform 0.5s ease-out',
+        }}
+      >
         <div 
           className="flex flex-col justify-between items-start"
           style={{
@@ -375,7 +573,7 @@ export default function RandomPage() {
             background: currentShift.bgColor,
             borderRadius: '20px',
             padding: '12px 20px 32px 24px',
-            flex: 1
+            flex: 1,
           }}
         >
           <div className="flex flex-row justify-between items-center w-full">
@@ -408,13 +606,15 @@ export default function RandomPage() {
                 style={{ filter: 'drop-shadow(0px 0px 22px rgba(0, 0, 0, 0.06))' }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 8L15 8M15 8C15 9.65686 16.3431 11 18 11C19.6569 11 21 9.65685 21 8C21 6.34315 19.6569 5 18 5C16.3431 5 15 6.34315 15 8ZM9 16L21 16M9 16C9 17.6569 7.65685 19 6 19C4.34315 19 3 17.6569 3 16C3 14.3431 4.34315 13 6 13C7.65685 13 9 14.3431 9 16Z" stroke="#424242" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M3 8L15 8M15 8C15 9.65686 16.3431 11 18 11C19.6569 11 21 9.65685 21 8C21 6.34315 19.6569 5 18 5C16.3431 5 15 6.34315 15 8ZM9 16L21 16M9 16C9 17.6569 7.65685 19 6 19C4.34315 19 3 17.65685 3 16C3 14.3431 4.34315 13 6 13C7.65685 13 9 14.3431 9 16Z" stroke="#424242" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
             </Link>
           </div>
 
-          <div className="flex flex-col items-start gap-7 w-full flex-1 justify-end">
+          <div 
+            className="flex flex-col items-start gap-7 w-full flex-1 justify-end"
+          >
             {shifts.length > 1 && (
               <div className="flex flex-row items-center" style={{ gap: '10px', marginBottom: '12px', paddingLeft: '4px' }}>
                 {shifts.map((_: any, index: number) => (
