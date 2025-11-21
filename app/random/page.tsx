@@ -378,6 +378,46 @@ export default function RandomPage() {
         </div>
 
         <div
+          style={{
+            position: "fixed",
+            top: refreshIconTop,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 40,
+            opacity: isRefreshing || pullDistance > 10 ? 1 : 0,
+            transition: isRefreshing ? "opacity 0.2s ease-in-out" : "none",
+            pointerEvents: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            willChange: "opacity",
+          }}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            style={{
+              transform: refreshIconRotation === "spin" ? undefined : `rotate(${refreshIconRotation})`,
+              transformOrigin: "center center",
+              willChange: "transform",
+              animation: refreshIconRotation === "spin" ? "spin 1s linear infinite" : undefined,
+            }}
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              fill="none"
+              stroke="#424242"
+              strokeWidth="3"
+              strokeDasharray="8 4"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+
+        <div
           className="flex flex-col items-center pt-5 pb-0 px-4 sm:px-6 flex-1"
           style={{
             transform: `translateY(${pullDistance}px)`,
