@@ -143,6 +143,19 @@
   scrollbar-width: none;
 }
 
+/* Device viewport safe area handling */
+.device-viewport {
+  /* Define safe area insets for device preview mode */
+  --safe-area-inset-top: 0px;
+  --safe-area-inset-bottom: 0px;
+}
+
+/* When inside device viewport, apply safe area padding to body-like containers */
+.device-viewport > * {
+  padding-top: var(--safe-area-inset-top);
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
