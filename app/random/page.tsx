@@ -6,17 +6,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
-// Random giphy GIFs for no shifts screen
-const giphyGifs = [
-  "https://media.giphy.com/media/artj92V8o75VPL7AeQ/giphy.gif",
-  "https://media.giphy.com/media/26tOZ42Mg6pbTUPHW/giphy.gif",
-  "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
-  "https://media.giphy.com/media/3oz8xAFtqoOUUrsh7W/giphy.gif",
-]
-
 const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 const fullDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-const statuses = ["happening", "coming"]
 
 function getSettings() {
   if (typeof window === "undefined") {
@@ -50,7 +41,7 @@ function generateRandomShifts() {
     return null
   }
 
-  const numShifts = Math.floor(Math.random() * 4) // 0-3 shifts
+  const numShifts = Math.floor(Math.random() * 4)
 
   if (numShifts === 0) {
     return null
@@ -60,15 +51,12 @@ function generateRandomShifts() {
 
   for (let i = 0; i < numShifts; i++) {
     const type = types[Math.floor(Math.random() * types.length)]
-
-    // Add some randomness above the minimum (0-15 degrees above minimum)
     const tempDiff = settings.minimumShift + Math.floor(Math.random() * 16)
-    const startTemp = Math.floor(Math.random() * 25) + 5 // 5-29 degrees
+    const startTemp = Math.floor(Math.random() * 25) + 5
     const endTemp = type === "rise" ? startTemp + tempDiff : startTemp - tempDiff
 
     const daysUntil = Math.floor(Math.random() * 7)
     const isToday = daysUntil === 0
-
     const sameDay = isToday && Math.random() > 0.5
 
     const startDay = isToday ? "today" : days[Math.floor(Math.random() * days.length)]
@@ -79,24 +67,20 @@ function generateRandomShifts() {
         : days[Math.floor(Math.random() * days.length)]
 
     const status = daysUntil === 0 ? "happening" : "coming"
-
     const timeOfDay = ["morning", "midday", "evening", "night"][Math.floor(Math.random() * 4)]
 
     let collapsedText = ""
     let expandedText = ""
 
     if (isToday && sameDay) {
-      // Starts and ends today: "today 27° → 43°"
       collapsedText = `today ${startTemp}° → ${endTemp}°`
       expandedText = `This ${type} is happening now: Today ${timeOfDay} (${startTemp}°) → ${endTemp}°`
     } else if (isToday && !sameDay) {
-      // Starts today, ends different day: "today 27° → wed 43°"
       const endDayIndex = days.indexOf(endDay)
       const endDayFull = fullDays[endDayIndex]
       collapsedText = `today ${startTemp}° → ${endDay} ${endTemp}°`
       expandedText = `This ${type} is happening now: Today ${timeOfDay} (${startTemp}°) → ${endDayFull} ${timeOfDay} (${endTemp}°)`
     } else {
-      // Normal display: "mon 27° → wed 43°" (collapsed) and "Monday ... Wednesday" (expanded)
       const startDayIndex = days.indexOf(startDay)
       const endDayIndex = days.indexOf(endDay)
       const startDayFull = fullDays[startDayIndex]
@@ -153,21 +137,17 @@ export default function RandomPage() {
 
   const handleMove = (clientY: number) => {
     if (!isPulling || isRefreshing) return
-
     const distance = Math.max(0, clientY - startY)
-
     if (distance > 0) {
-      setPullDistance(Math.min(distance, 200)) // Increased from 120 to 200
+      setPullDistance(Math.min(distance, 200))
     }
   }
 
   const handleEnd = () => {
     setIsPulling(false)
-
     if (pullDistance > 100 && !isRefreshing) {
       setPullDistance(52)
       setIsRefreshing(true)
-
       setTimeout(() => {
         handleRegenerate()
         setIsRefreshing(false)
@@ -178,7 +158,6 @@ export default function RandomPage() {
     }
   }
 
-  // Touch events
   const handleTouchStart = (e: React.TouchEvent) => {
     handleStart(e.touches[0].clientY)
   }
@@ -191,7 +170,6 @@ export default function RandomPage() {
     handleEnd()
   }
 
-  // Mouse events
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest("button, a")) return
     handleStart(e.clientY)
@@ -218,7 +196,7 @@ export default function RandomPage() {
 
   const refreshIconOpacity = isRefreshing ? 1 : Math.min(pullDistance / 100, 1)
   const refreshIconRotation = isRefreshing ? "spin" : `${pullDistance * 3}deg`
-  const refreshIconTop = "24px" // Keep icon at 24px from top always
+  const refreshIconTop = "24px"
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -227,7 +205,6 @@ export default function RandomPage() {
   }, [isExpanded])
 
   useEffect(() => {
-    // Generate random data on mount
     const randomShifts = generateRandomShifts()
     setShifts(randomShifts)
     setLoading(false)
@@ -325,7 +302,6 @@ export default function RandomPage() {
   const renderTextWithArrow = (text: string) => {
     const parts = text.split("→")
     if (parts.length === 1) return text
-
     return (
       <>
         {parts[0]}
@@ -333,6 +309,23 @@ export default function RandomPage() {
         {parts[1]}
       </>
     )
+  }
+
+  const getRandomGif = () => {
+    const gifs = [
+      "/gifs/no-shifts/dancing.gif",
+      "/gifs/no-shifts/trump-yes.gif",
+      "/gifs/no-shifts/napoleon-yes.gif",
+      "/gifs/no-shifts/lebowski-thumbs.gif",
+      "/gifs/no-shifts/office-party.gif",
+      "/gifs/no-shifts/baby-cheer.gif",
+      "/gifs/no-shifts/oprah-tears.gif",
+      "/gifs/no-shifts/shaq-nod.gif",
+      "/gifs/no-shifts/happy-crying.gif",
+      "/gifs/no-shifts/elmo-celebrate.gif",
+      "/gifs/no-shifts/excited-kid.gif",
+    ]
+    return gifs[Math.floor(Math.random() * gifs.length)]
   }
 
   if (loading) {
@@ -343,9 +336,8 @@ export default function RandomPage() {
     )
   }
 
-  // No shifts - show "No shifts" screen
   if (!shifts) {
-    const randomGif = giphyGifs[Math.floor(Math.random() * giphyGifs.length)]
+    const randomGif = getRandomGif()
 
     return (
       <div
@@ -483,7 +475,6 @@ export default function RandomPage() {
     )
   }
 
-  // Has shifts - show shift screen
   const currentShift = shifts[activeTab - 1]
 
   return (

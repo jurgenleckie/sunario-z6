@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 
 export default function Home() {
@@ -11,6 +11,7 @@ export default function Home() {
   const [isPulling, setIsPulling] = useState(false)
   const [pullDistance, setPullDistance] = useState(0)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [randomGif, setRandomGif] = useState<string>("")
   const startY = useRef(0)
   const scrollableRef = useRef<HTMLDivElement>(null)
 
@@ -100,6 +101,24 @@ export default function Home() {
       setIsPulling(false)
     }
   }
+
+  useEffect(() => {
+    const gifs = [
+      "/gifs/no-shifts/dancing.gif",
+      "/gifs/no-shifts/trump-yes.gif",
+      "/gifs/no-shifts/napoleon-yes.gif",
+      "/gifs/no-shifts/lebowski-thumbs.gif",
+      "/gifs/no-shifts/office-party.gif",
+      "/gifs/no-shifts/baby-cheer.gif",
+      "/gifs/no-shifts/oprah-tears.gif",
+      "/gifs/no-shifts/shaq-nod.gif",
+      "/gifs/no-shifts/happy-crying.gif",
+      "/gifs/no-shifts/elmo-celebrate.gif",
+      "/gifs/no-shifts/excited-kid.gif",
+    ]
+    const randomGif = gifs[Math.floor(Math.random() * gifs.length)]
+    setRandomGif(randomGif)
+  }, [])
 
   return (
     <div
@@ -223,7 +242,7 @@ export default function Home() {
             </div>
 
             <img
-              src="https://media.giphy.com/media/artj92V8o75VPL7AeQ/giphy.gif"
+              src={randomGif || "/placeholder.svg"}
               alt="Happy celebration"
               className="w-full h-[240px] object-cover rounded-[24px]"
             />
