@@ -413,8 +413,8 @@ export default function RandomPage() {
             transition: isPulling ? "none" : "transform 0.5s ease-out",
           }}
         >
-          <div className="flex flex-col items-start gap-10 w-full max-w-[342px] py-3 flex-1">
-            <div className="flex flex-col items-start gap-10 w-full">
+          <div className="flex flex-col items-start gap-6 w-full max-w-[342px] py-3 flex-1">
+            <div className="flex flex-col items-start w-full">
               <div className="flex flex-row justify-between items-center w-full">
                 <div className="flex flex-col justify-center items-start gap-0">
                   <p
@@ -465,7 +465,7 @@ export default function RandomPage() {
                 </Link>
               </div>
 
-              <div className="flex flex-col items-start w-full">
+              <div className="flex flex-col items-start w-full mt-10">
                 <h1
                   className="w-full font-bold text-[38px] leading-[42px] tracking-[-0.03em] text-[#212121]"
                   style={{ WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale" }}
@@ -485,7 +485,7 @@ export default function RandomPage() {
               <img
                 src={randomGif || "/placeholder.svg"}
                 alt="Happy celebration"
-                className="w-full h-[240px] object-cover rounded-[24px]"
+                className="w-full h-[240px] object-cover rounded-[24px] mt-6"
                 style={{ pointerEvents: "none" }}
               />
             </div>
