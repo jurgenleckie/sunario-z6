@@ -240,6 +240,15 @@ export default function SettingsPage() {
         <Link href="/random" className="px-3 py-1 bg-blue-600 text-white text-xs rounded whitespace-nowrap">
           Random
         </Link>
+        <button
+          onClick={() => {
+            localStorage.setItem("testNoShifts", "true")
+            window.location.href = "/random"
+          }}
+          className="px-3 py-1 bg-green-600 text-white text-xs rounded whitespace-nowrap cursor-pointer border-0"
+        >
+          Random no shifts
+        </button>
       </div>
 
       <style jsx global>{`

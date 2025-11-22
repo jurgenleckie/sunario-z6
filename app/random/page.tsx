@@ -21,6 +21,8 @@ function getRandomGif() {
     "/gifs/no-shifts/elmo-celebrate.gif",
     "/gifs/no-shifts/excited-kid.gif",
     "/gifs/no-shifts/office-celebration.gif",
+    "/gifs/no-shifts/fallon-elmo.gif",
+    "/gifs/no-shifts/fifa-celebration.gif",
   ]
   return gifs[Math.floor(Math.random() * gifs.length)]
 }
@@ -222,6 +224,13 @@ export default function RandomPage() {
   }, [isExpanded])
 
   useEffect(() => {
+    const testNoShifts = localStorage.getItem("testNoShifts")
+    if (testNoShifts === "true") {
+      setShifts([])
+      setRandomGif(getRandomGif())
+      localStorage.removeItem("testNoShifts")
+    }
+
     const randomShifts = generateRandomShifts()
     setShifts(randomShifts)
     setLoading(false)
@@ -339,7 +348,7 @@ export default function RandomPage() {
 
   const currentShift = shifts?.[activeTab - 1]
 
-  if (!shifts) {
+  if (!shifts || shifts.length === 0 || !currentShift) {
     return (
       <div
         className="relative w-full min-h-screen bg-white flex flex-col max-w-[600px] mx-auto"
@@ -364,6 +373,15 @@ export default function RandomPage() {
             className="px-3 py-1 bg-blue-600 text-white text-xs rounded whitespace-nowrap"
           >
             Random
+          </button>
+          <button
+            onClick={() => {
+              setShifts([])
+              setRandomGif(getRandomGif())
+            }}
+            className="px-3 py-1 bg-green-600 text-white text-xs rounded whitespace-nowrap"
+          >
+            Random no shifts
           </button>
         </div>
 
@@ -537,6 +555,15 @@ export default function RandomPage() {
           className="px-3 py-1 bg-blue-600 text-white text-xs rounded whitespace-nowrap"
         >
           Random
+        </button>
+        <button
+          onClick={() => {
+            setShifts([])
+            setRandomGif(getRandomGif())
+          }}
+          className="px-3 py-1 bg-green-600 text-white text-xs rounded whitespace-nowrap"
+        >
+          Random no shifts
         </button>
       </div>
 

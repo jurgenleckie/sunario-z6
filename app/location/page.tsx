@@ -100,6 +100,24 @@ export default function LocationPage() {
         >
           Random
         </Link>
+        <button
+          onClick={() => {
+            localStorage.setItem("testNoShifts", "true")
+            router.push("/random")
+          }}
+          style={{
+            padding: "4px 12px",
+            background: "#16a34a",
+            color: "white",
+            fontSize: "12px",
+            borderRadius: "4px",
+            whiteSpace: "nowrap",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Random no shifts
+        </button>
       </div>
 
       {/* Content Card */}
