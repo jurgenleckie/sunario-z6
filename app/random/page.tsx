@@ -24,6 +24,7 @@ function getRandomGif() {
     "/gifs/no-shifts/fallon-elmo.gif",
     "/gifs/no-shifts/fifa-celebration.gif",
     "/gifs/no-shifts/goldblum-wow.gif",
+    "/gifs/no-shifts/close-call.gif",
   ]
   return gifs[Math.floor(Math.random() * gifs.length)]
 }
