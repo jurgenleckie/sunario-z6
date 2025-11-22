@@ -9,6 +9,23 @@ import { useRouter } from "next/navigation"
 const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 const fullDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
+function getRandomGif() {
+  const gifs = [
+    "/gifs/no-shifts/dancing.gif",
+    "/gifs/no-shifts/trump-yes.gif",
+    "/gifs/no-shifts/napoleon-yes.gif",
+    "/gifs/no-shifts/lebowski-thumbs.gif",
+    "/gifs/no-shifts/baby-cheer.gif",
+    "/gifs/no-shifts/oprah-tears.gif",
+    "/gifs/no-shifts/shaq-nod.gif",
+    "/gifs/no-shifts/happy-crying.gif",
+    "/gifs/no-shifts/elmo-celebrate.gif",
+    "/gifs/no-shifts/excited-kid.gif",
+    "/gifs/no-shifts/office-celebration.gif",
+  ]
+  return gifs[Math.floor(Math.random() * gifs.length)]
+}
+
 function getSettings() {
   if (typeof window === "undefined") {
     return {
@@ -127,6 +144,7 @@ export default function RandomPage() {
   const [isPulling, setIsPulling] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [startY, setStartY] = useState(0)
+  const [randomGif, setRandomGif] = useState(() => getRandomGif())
 
   const handleStart = (clientY: number) => {
     if (window.scrollY === 0) {
@@ -311,23 +329,6 @@ export default function RandomPage() {
     )
   }
 
-  const getRandomGif = () => {
-    const gifs = [
-      "/gifs/no-shifts/dancing.gif",
-      "/gifs/no-shifts/trump-yes.gif",
-      "/gifs/no-shifts/napoleon-yes.gif",
-      "/gifs/no-shifts/lebowski-thumbs.gif",
-      "/gifs/no-shifts/baby-cheer.gif",
-      "/gifs/no-shifts/oprah-tears.gif",
-      "/gifs/no-shifts/shaq-nod.gif",
-      "/gifs/no-shifts/happy-crying.gif",
-      "/gifs/no-shifts/elmo-celebrate.gif",
-      "/gifs/no-shifts/excited-kid.gif",
-      "/gifs/no-shifts/office-celebration.gif", // added new office celebration GIF
-    ]
-    return gifs[Math.floor(Math.random() * gifs.length)]
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -337,8 +338,6 @@ export default function RandomPage() {
   }
 
   if (!shifts) {
-    const randomGif = getRandomGif()
-
     return (
       <div
         className="relative w-full min-h-screen bg-white flex flex-col max-w-[600px] mx-auto"
