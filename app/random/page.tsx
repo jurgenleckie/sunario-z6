@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -144,7 +143,7 @@ export default function RandomPage() {
   const [isPulling, setIsPulling] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [startY, setStartY] = useState(0)
-  const [randomGif, setRandomGif] = useState(() => getRandomGif())
+  const [randomGif, setRandomGif] = useState<string>(getRandomGif())
 
   const handleStart = (clientY: number) => {
     if (window.scrollY === 0) {
@@ -234,6 +233,7 @@ export default function RandomPage() {
     setTimeout(() => {
       const randomShifts = generateRandomShifts()
       setShifts(randomShifts)
+      setRandomGif(getRandomGif())
       setLoading(false)
     }, 300)
   }
@@ -336,6 +336,8 @@ export default function RandomPage() {
       </div>
     )
   }
+
+  const currentShift = shifts?.[activeTab - 1]
 
   if (!shifts) {
     return (
@@ -510,8 +512,6 @@ export default function RandomPage() {
       </div>
     )
   }
-
-  const currentShift = shifts[activeTab - 1]
 
   return (
     <div
