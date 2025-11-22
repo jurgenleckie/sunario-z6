@@ -73,20 +73,6 @@ export default function LocationPage() {
           Location
         </Link>
         <Link
-          href="/"
-          style={{
-            padding: "4px 12px",
-            background: "#1f2937",
-            color: "white",
-            fontSize: "12px",
-            borderRadius: "4px",
-            textDecoration: "none",
-            whiteSpace: "nowrap",
-          }}
-        >
-          No shifts
-        </Link>
-        <Link
           href="/settings"
           style={{
             padding: "4px 12px",
@@ -151,6 +137,8 @@ export default function LocationPage() {
               textAlign: "center",
               letterSpacing: "-0.03em",
               color: "#000000",
+              WebkitFontSmoothing: "antialiased",
+              MozOsxFontSmoothing: "grayscale",
             }}
           >
             😎
@@ -177,6 +165,8 @@ export default function LocationPage() {
                 textAlign: "center",
                 letterSpacing: "-0.03em",
                 color: "#212121",
+                WebkitFontSmoothing: "antialiased",
+                MozOsxFontSmoothing: "grayscale",
               }}
             >
               Hello there, please share your location
@@ -194,6 +184,8 @@ export default function LocationPage() {
                 letterSpacing: "-0.03em",
                 color: "#BDBDBD",
                 marginTop: "0px",
+                WebkitFontSmoothing: "antialiased",
+                MozOsxFontSmoothing: "grayscale",
               }}
             >
               So we can do our forecasting magic
@@ -227,6 +219,8 @@ export default function LocationPage() {
             letterSpacing: "-0.03em",
             color: "#000000",
             transition: "background 0.1s ease",
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
           }}
         >
           {/* Marker Pin Icon */}
@@ -270,6 +264,8 @@ export default function LocationPage() {
             fontSize: "14px",
             lineHeight: "20px",
             color: "#9E9E9E",
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
           }}
         >
           sunario© 2025

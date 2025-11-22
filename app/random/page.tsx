@@ -317,13 +317,13 @@ export default function RandomPage() {
       "/gifs/no-shifts/trump-yes.gif",
       "/gifs/no-shifts/napoleon-yes.gif",
       "/gifs/no-shifts/lebowski-thumbs.gif",
-      "/gifs/no-shifts/office-party.gif",
       "/gifs/no-shifts/baby-cheer.gif",
       "/gifs/no-shifts/oprah-tears.gif",
       "/gifs/no-shifts/shaq-nod.gif",
       "/gifs/no-shifts/happy-crying.gif",
       "/gifs/no-shifts/elmo-celebrate.gif",
       "/gifs/no-shifts/excited-kid.gif",
+      "/gifs/no-shifts/office-celebration.gif", // added new office celebration GIF
     ]
     return gifs[Math.floor(Math.random() * gifs.length)]
   }
@@ -354,9 +354,6 @@ export default function RandomPage() {
         <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
           <Link href="/location" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
             Location
-          </Link>
-          <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
-            No shifts
           </Link>
           <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
             Settings
@@ -417,33 +414,70 @@ export default function RandomPage() {
           }}
         >
           <div className="flex flex-col items-start gap-10 w-full max-w-[342px] py-3 flex-1">
-            <div className="flex flex-row justify-end items-center w-full" style={{ padding: "12px" }}>
-              <Link href="/settings">
-                <button
-                  className="flex items-center justify-center w-10 h-10 rounded-full"
-                  style={{ filter: "drop-shadow(0px 0px 22px rgba(0, 0, 0, 0.06))" }}
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M3 8L15 8M15 8C15 9.65686 16.3431 11 18 11C19.6569 11 21 9.65685 21 8C21 6.34315 19.6569 5 18 5C16.3431 5 15 6.34315 15 8ZM9 16L21 16M9 16C9 17.6569 7.65685 19 6 19C4.34315 19 3 17.65685 3 16C3 14.3431 4.34315 13 6 13C7.65685 13 9 14.3431 9 16Z"
-                      stroke="#424242"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </Link>
-            </div>
+            <div className="flex flex-col items-start gap-10 w-full">
+              <div className="flex flex-row justify-between items-center w-full">
+                <div className="flex flex-col justify-center items-start gap-0">
+                  <p
+                    style={{
+                      fontFamily: "Inter",
+                      fontWeight: 700,
+                      fontSize: "14px",
+                      lineHeight: "16px",
+                      letterSpacing: "-0.02em",
+                      color: "#424242",
+                      WebkitFontSmoothing: "antialiased",
+                      MozOsxFontSmoothing: "grayscale",
+                    }}
+                  >
+                    Amsterdam
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "Inter",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      lineHeight: "16px",
+                      letterSpacing: "-0.02em",
+                      color: "#424242",
+                      WebkitFontSmoothing: "antialiased",
+                      MozOsxFontSmoothing: "grayscale",
+                    }}
+                  >
+                    1 min ago
+                  </p>
+                </div>
 
-            <div className="flex flex-col items-start gap-5 w-full">
+                <Link href="/settings">
+                  <button
+                    className="flex items-center justify-center w-10 h-10 rounded-full"
+                    style={{ filter: "drop-shadow(0px 0px 22px rgba(0, 0, 0, 0.06))" }}
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M3 8L15 8M15 8C15 9.65686 16.3431 11 18 11C19.6569 11 21 9.65685 21 8C21 6.34315 19.6569 5 18 5C16.3431 5 15 6.34315 15 8ZM9 16L21 16M9 16C9 17.6569 7.65685 19 6 19C4.34315 19 3 17.65685 3 16C3 14.3431 4.34315 13 6 13C7.65685 13 9 14.3431 9 16Z"
+                        stroke="#424242"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </Link>
+              </div>
+
               <div className="flex flex-col items-start w-full">
-                <h1 className="w-full font-bold text-[38px] leading-[42px] tracking-[-0.03em] text-[#212121]">
+                <h1
+                  className="w-full font-bold text-[38px] leading-[42px] tracking-[-0.03em] text-[#212121]"
+                  style={{ WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale" }}
+                >
                   No big temp
                   <br />
                   shifts expected
                 </h1>
-                <p className="w-full font-bold text-[38px] leading-[42px] tracking-[-0.03em] text-[#BDBDBD]">
+                <p
+                  className="w-full font-bold text-[38px] leading-[42px] tracking-[-0.03em] text-[#BDBDBD]"
+                  style={{ WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale" }}
+                >
                   the next 7 days
                 </p>
               </div>
@@ -452,6 +486,7 @@ export default function RandomPage() {
                 src={randomGif || "/placeholder.svg"}
                 alt="Happy celebration"
                 className="w-full h-[240px] object-cover rounded-[24px]"
+                style={{ pointerEvents: "none" }}
               />
             </div>
           </div>
@@ -465,6 +500,8 @@ export default function RandomPage() {
                 lineHeight: "20px",
                 color: "#9E9E9E",
                 letterSpacing: "0.01em",
+                WebkitFontSmoothing: "antialiased",
+                MozOsxFontSmoothing: "grayscale",
               }}
             >
               sunario© {currentYear}
@@ -492,9 +529,6 @@ export default function RandomPage() {
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
         <Link href="/location" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Location
-        </Link>
-        <Link href="/" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
-          No shifts
         </Link>
         <Link href="/settings" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Settings
@@ -579,6 +613,8 @@ export default function RandomPage() {
                   lineHeight: "16px",
                   letterSpacing: "-0.02em",
                   color: "#424242",
+                  WebkitFontSmoothing: "antialiased",
+                  MozOsxFontSmoothing: "grayscale",
                 }}
               >
                 Amsterdam
@@ -591,6 +627,8 @@ export default function RandomPage() {
                   lineHeight: "16px",
                   letterSpacing: "-0.02em",
                   color: "#424242",
+                  WebkitFontSmoothing: "antialiased",
+                  MozOsxFontSmoothing: "grayscale",
                 }}
               >
                 1 min ago
@@ -659,6 +697,8 @@ export default function RandomPage() {
                     letterSpacing: "-0.09em",
                     color: "#424242",
                     marginRight: "-38px",
+                    WebkitFontSmoothing: "antialiased",
+                    MozOsxFontSmoothing: "grayscale",
                   }}
                 >
                   {currentShift.temp}
@@ -671,6 +711,8 @@ export default function RandomPage() {
                     lineHeight: "36px",
                     letterSpacing: "-0.02em",
                     color: "#424242",
+                    WebkitFontSmoothing: "antialiased",
+                    MozOsxFontSmoothing: "grayscale",
                   }}
                 >
                   {currentShift.label}
@@ -691,6 +733,8 @@ export default function RandomPage() {
                       letterSpacing: "-0.02em",
                       color: currentShift.statusColor,
                       marginBottom: "0px",
+                      WebkitFontSmoothing: "antialiased",
+                      MozOsxFontSmoothing: "grayscale",
                     }}
                   >
                     {currentShift.status}
@@ -713,6 +757,8 @@ export default function RandomPage() {
                         letterSpacing: "-0.03em",
                         color: "#424242",
                         marginTop: "0px",
+                        WebkitFontSmoothing: "antialiased",
+                        MozOsxFontSmoothing: "grayscale",
                       }}
                     >
                       {renderTextWithArrow(isExpanded ? currentShift.expanded : currentShift.collapsed)}
@@ -767,6 +813,8 @@ export default function RandomPage() {
               lineHeight: "20px",
               color: "#9E9E9E",
               letterSpacing: "0.01em",
+              WebkitFontSmoothing: "antialiased",
+              MozOsxFontSmoothing: "grayscale",
             }}
           >
             sunario© {currentYear}
