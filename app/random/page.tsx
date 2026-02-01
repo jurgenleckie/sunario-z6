@@ -377,7 +377,12 @@ export default function RandomPage() {
 
   const currentShift = shifts?.[activeTab - 1]
 
-  if (!isHydrated || !shifts || shifts.length === 0 || !currentShift) {
+  // Show blank screen while hydrating to prevent flash
+  if (!isHydrated) {
+    return <div className="min-h-screen bg-white max-w-[600px] mx-auto" />
+  }
+
+  if (!shifts || shifts.length === 0 || !currentShift) {
     return (
       <div
         className="relative w-full min-h-screen bg-white flex flex-col max-w-[600px] mx-auto"
