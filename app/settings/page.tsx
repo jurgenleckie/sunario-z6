@@ -65,8 +65,6 @@ function IOSPicker({ isOpen, onClose, options, selectedValue, onSelect, title }:
 
 export default function SettingsPage() {
   const router = useRouter()
-  const [isSlideOut, setIsSlideOut] = useState(false)
-  const [hasAnimated, setHasAnimated] = useState(true) // Start true to skip initial animation
 
   const [showRisingShifts, setShowRisingShifts] = useState(() => {
     if (typeof window !== "undefined") {
@@ -219,18 +217,11 @@ export default function SettingsPage() {
 
   const handleBack = (e: React.MouseEvent) => {
     e.preventDefault()
-    setIsSlideOut(true)
-    setTimeout(() => {
-      router.push("/")
-    }, 300)
+    router.push("/")
   }
 
   return (
-    <div
-      className={`min-h-screen bg-[#EEEEEE] flex flex-col overflow-y-auto max-w-[600px] mx-auto ${
-        isSlideOut ? "animate-slide-out" : hasAnimated ? "" : "animate-slide-in"
-      }`}
-    >
+    <div className="min-h-screen bg-[#EEEEEE] flex flex-col overflow-y-auto max-w-[600px] mx-auto">
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
         <Link href="/location" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Location
