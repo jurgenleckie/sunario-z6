@@ -66,121 +66,82 @@ function IOSPicker({ isOpen, onClose, options, selectedValue, onSelect, title }:
 export default function SettingsPage() {
   const router = useRouter()
 
-  const [showRisingShifts, setShowRisingShifts] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("showRisingShifts")
-      return saved !== null ? saved === "true" : true
-    }
-    return true
-  })
-
-  const [showDroppingShifts, setShowDroppingShifts] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("showDroppingShifts")
-      return saved !== null ? saved === "true" : false
-    }
-    return false
-  })
-
-  const [includeDayTemps, setIncludeDayTemps] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("includeDayTemps")
-      return saved !== null ? saved === "true" : true
-    }
-    return true
-  })
-
-  const [includeNightTemps, setIncludeNightTemps] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("includeNightTemps")
-      return saved !== null ? saved === "true" : true
-    }
-    return true
-  })
-
-  const [minimumShift, setMinimumShift] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("minimumShift")
-      return saved || "12°"
-    }
-    return "12°"
-  })
-
-  const [showShiftsIn, setShowShiftsIn] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("showShiftsIn")
-      return saved || "2 days"
-    }
-    return "2 days"
-  })
-
-  const [lookAhead, setLookAhead] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("lookAhead")
-      return saved || "7 days"
-    }
-    return "7 days"
-  })
-
-  const [tempUnit, setTempUnit] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("tempUnit")
-      return saved || "Auto (°C)"
-    }
-    return "Auto (°C)"
-  })
-
+  // Use consistent default values for server and client to avoid hydration mismatch
+  const [showRisingShifts, setShowRisingShifts] = useState(true)
+  const [showDroppingShifts, setShowDroppingShifts] = useState(false)
+  const [includeDayTemps, setIncludeDayTemps] = useState(true)
+  const [includeNightTemps, setIncludeNightTemps] = useState(true)
+  const [minimumShift, setMinimumShift] = useState("12°")
+  const [showShiftsIn, setShowShiftsIn] = useState("2 days")
+  const [lookAhead, setLookAhead] = useState("7 days")
+  const [tempUnit, setTempUnit] = useState("Auto (°C)")
   const [openPicker, setOpenPicker] = useState<string | null>(null)
-
   const [animatingToggle, setAnimatingToggle] = useState<string | null>(null)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // Load saved values from localStorage after hydration
+  useEffect(() => {
+    const savedRising = localStorage.getItem("showRisingShifts")
+    const savedDropping = localStorage.getItem("showDroppingShifts")
+    const savedDay = localStorage.getItem("includeDayTemps")
+    const savedNight = localStorage.getItem("includeNightTemps")
+    const savedMinShift = localStorage.getItem("minimumShift")
+    const savedShowIn = localStorage.getItem("showShiftsIn")
+    const savedLookAhead = localStorage.getItem("lookAhead")
+    const savedTempUnit = localStorage.getItem("tempUnit")
+
+    if (savedRising !== null) setShowRisingShifts(savedRising === "true")
+    if (savedDropping !== null) setShowDroppingShifts(savedDropping === "true")
+    if (savedDay !== null) setIncludeDayTemps(savedDay === "true")
+    if (savedNight !== null) setIncludeNightTemps(savedNight === "true")
+    if (savedMinShift) setMinimumShift(savedMinShift)
+    if (savedShowIn) setShowShiftsIn(savedShowIn)
+    if (savedLookAhead) setLookAhead(savedLookAhead)
+    if (savedTempUnit) setTempUnit(savedTempUnit)
+    
+    setIsHydrated(true)
+  }, [])
+
+  // Save to localStorage when values change (only after hydration)
+  useEffect(() => {
+    if (!isHydrated) return
+    localStorage.setItem("showRisingShifts", String(showRisingShifts))
+  }, [showRisingShifts, isHydrated])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("showRisingShifts", String(showRisingShifts))
-    }
-  }, [showRisingShifts])
+    if (!isHydrated) return
+    localStorage.setItem("showDroppingShifts", String(showDroppingShifts))
+  }, [showDroppingShifts, isHydrated])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("showDroppingShifts", String(showDroppingShifts))
-    }
-  }, [showDroppingShifts])
+    if (!isHydrated) return
+    localStorage.setItem("includeDayTemps", String(includeDayTemps))
+  }, [includeDayTemps, isHydrated])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("includeDayTemps", String(includeDayTemps))
-    }
-  }, [includeDayTemps])
+    if (!isHydrated) return
+    localStorage.setItem("includeNightTemps", String(includeNightTemps))
+  }, [includeNightTemps, isHydrated])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("includeNightTemps", String(includeNightTemps))
-    }
-  }, [includeNightTemps])
+    if (!isHydrated) return
+    localStorage.setItem("minimumShift", minimumShift)
+  }, [minimumShift, isHydrated])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("minimumShift", minimumShift)
-    }
-  }, [minimumShift])
+    if (!isHydrated) return
+    localStorage.setItem("showShiftsIn", showShiftsIn)
+  }, [showShiftsIn, isHydrated])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("showShiftsIn", showShiftsIn)
-    }
-  }, [showShiftsIn])
+    if (!isHydrated) return
+    localStorage.setItem("lookAhead", lookAhead)
+  }, [lookAhead, isHydrated])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("lookAhead", lookAhead)
-    }
-  }, [lookAhead])
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("tempUnit", tempUnit)
-    }
-  }, [tempUnit])
+    if (!isHydrated) return
+    localStorage.setItem("tempUnit", tempUnit)
+  }, [tempUnit, isHydrated])
 
   const minimumShiftOptions = Array.from({ length: 26 }, (_, i) => `${i + 5}°`)
   const showShiftsInOptions = [
