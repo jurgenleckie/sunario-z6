@@ -66,6 +66,7 @@ function IOSPicker({ isOpen, onClose, options, selectedValue, onSelect, title }:
 export default function SettingsPage() {
   const router = useRouter()
   const [isSlideOut, setIsSlideOut] = useState(false)
+  const [hasAnimated, setHasAnimated] = useState(true) // Start true to skip initial animation
 
   const [showRisingShifts, setShowRisingShifts] = useState(() => {
     if (typeof window !== "undefined") {
@@ -227,7 +228,7 @@ export default function SettingsPage() {
   return (
     <div
       className={`min-h-screen bg-[#EEEEEE] flex flex-col overflow-y-auto max-w-[600px] mx-auto ${
-        isSlideOut ? "animate-slide-out" : "animate-slide-in"
+        isSlideOut ? "animate-slide-out" : hasAnimated ? "" : "animate-slide-in"
       }`}
     >
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
