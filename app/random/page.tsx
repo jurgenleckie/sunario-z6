@@ -131,8 +131,23 @@ function generateRandomShifts() {
 
 export default function RandomPage() {
   const router = useRouter()
-  const [shifts, setShifts] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  
+  // Initialize state from cache synchronously to prevent flash
+  const [shifts, setShifts] = useState<any>(() => {
+    if (typeof window !== "undefined") {
+      const cachedShifts = sessionStorage.getItem("cachedShifts")
+      if (cachedShifts !== null) {
+        return cachedShifts === "null" ? null : JSON.parse(cachedShifts)
+      }
+    }
+    return null
+  })
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("cachedShifts") === null
+    }
+    return true
+  })
   const [activeTab, setActiveTab] = useState(1)
   const [isExpanded, setIsExpanded] = useState(() => {
     if (typeof window !== "undefined") {
@@ -147,7 +162,13 @@ export default function RandomPage() {
   const [isPulling, setIsPulling] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [startY, setStartY] = useState(0)
-  const [randomGif, setRandomGif] = useState<string>(getRandomGif())
+  const [randomGif, setRandomGif] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      const cachedGif = sessionStorage.getItem("cachedGif")
+      if (cachedGif) return cachedGif
+    }
+    return getRandomGif()
+  })
 
   const handleStart = (clientY: number) => {
     if (window.scrollY === 0) {
@@ -229,23 +250,22 @@ export default function RandomPage() {
     const testNoShifts = localStorage.getItem("testNoShifts")
     if (testNoShifts === "true") {
       setShifts([])
-      setRandomGif(getRandomGif())
+      const newGif = getRandomGif()
+      setRandomGif(newGif)
+      sessionStorage.setItem("cachedShifts", JSON.stringify([]))
+      sessionStorage.setItem("cachedGif", newGif)
       localStorage.removeItem("testNoShifts")
       setLoading(false)
       return
     }
 
-    // Check for cached shifts data to prevent regeneration on navigation
+    // If we already have cached data (loaded synchronously), skip generation
     const cachedShifts = sessionStorage.getItem("cachedShifts")
-    const cachedGif = sessionStorage.getItem("cachedGif")
-    
-    if (cachedShifts !== null && cachedGif) {
-      setShifts(cachedShifts === "null" ? null : JSON.parse(cachedShifts))
-      setRandomGif(cachedGif)
-      setLoading(false)
+    if (cachedShifts !== null) {
       return
     }
 
+    // Generate new data only on first visit
     const randomShifts = generateRandomShifts()
     const newGif = getRandomGif()
     setShifts(randomShifts)
