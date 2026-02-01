@@ -132,43 +132,18 @@ function generateRandomShifts() {
 export default function RandomPage() {
   const router = useRouter()
   
-  // Initialize state from cache synchronously to prevent flash
-  const [shifts, setShifts] = useState<any>(() => {
-    if (typeof window !== "undefined") {
-      const cachedShifts = sessionStorage.getItem("cachedShifts")
-      if (cachedShifts !== null) {
-        return cachedShifts === "null" ? null : JSON.parse(cachedShifts)
-      }
-    }
-    return null
-  })
-  const [loading, setLoading] = useState(() => {
-    if (typeof window !== "undefined") {
-      return sessionStorage.getItem("cachedShifts") === null
-    }
-    return true
-  })
+  const [shifts, setShifts] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState(1)
-  const [isExpanded, setIsExpanded] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("shiftExpandedState")
-      return saved === "true"
-    }
-    return false
-  })
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
   const currentYear = new Date().getFullYear()
 
   const [pullDistance, setPullDistance] = useState(0)
   const [isPulling, setIsPulling] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [startY, setStartY] = useState(0)
-  const [randomGif, setRandomGif] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      const cachedGif = sessionStorage.getItem("cachedGif")
-      if (cachedGif) return cachedGif
-    }
-    return ""
-  })
+  const [randomGif, setRandomGif] = useState<string>("")
 
   const handleStart = (clientY: number) => {
     if (window.scrollY === 0) {
@@ -240,13 +215,15 @@ export default function RandomPage() {
   const refreshIconRotation = isRefreshing ? "spin" : `${pullDistance * 3}deg`
   const refreshIconTop = "24px"
 
+  // Hydration effect - runs once on mount to load cached data
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("shiftExpandedState", String(isExpanded))
+    // Load expanded state from localStorage
+    const savedExpanded = localStorage.getItem("shiftExpandedState")
+    if (savedExpanded === "true") {
+      setIsExpanded(true)
     }
-  }, [isExpanded])
 
-  useEffect(() => {
+    // Check for test mode
     const testNoShifts = localStorage.getItem("testNoShifts")
     if (testNoShifts === "true") {
       setShifts([])
@@ -256,12 +233,19 @@ export default function RandomPage() {
       sessionStorage.setItem("cachedGif", newGif)
       localStorage.removeItem("testNoShifts")
       setLoading(false)
+      setIsHydrated(true)
       return
     }
 
-    // If we already have cached data (loaded synchronously), skip generation
+    // Check for cached data
     const cachedShifts = sessionStorage.getItem("cachedShifts")
-    if (cachedShifts !== null) {
+    const cachedGif = sessionStorage.getItem("cachedGif")
+    
+    if (cachedShifts !== null && cachedGif) {
+      setShifts(cachedShifts === "null" ? null : JSON.parse(cachedShifts))
+      setRandomGif(cachedGif)
+      setLoading(false)
+      setIsHydrated(true)
       return
     }
 
@@ -275,16 +259,15 @@ export default function RandomPage() {
     sessionStorage.setItem("cachedShifts", JSON.stringify(randomShifts))
     sessionStorage.setItem("cachedGif", newGif)
     setLoading(false)
+    setIsHydrated(true)
   }, [])
 
-  // Set initial gif on client if not cached (handles SSR case)
+  // Save expanded state when it changes (after hydration)
   useEffect(() => {
-    if (!randomGif) {
-      const newGif = getRandomGif()
-      setRandomGif(newGif)
-      sessionStorage.setItem("cachedGif", newGif)
+    if (isHydrated) {
+      localStorage.setItem("shiftExpandedState", String(isExpanded))
     }
-  }, [randomGif])
+  }, [isExpanded, isHydrated])
 
   const handleRegenerate = () => {
     setLoading(true)
