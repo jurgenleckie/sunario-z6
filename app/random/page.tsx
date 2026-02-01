@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useLayoutEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -131,7 +131,6 @@ function generateRandomShifts() {
 
 export default function RandomPage() {
   const router = useRouter()
-  const hasInitialized = useRef(false)
   
   // All state starts with consistent server-safe defaults
   const [shifts, setShifts] = useState<any>(null)
@@ -142,12 +141,8 @@ export default function RandomPage() {
   const [randomGif, setRandomGif] = useState<string>("")
   const currentYear = new Date().getFullYear()
   
-  // Use useLayoutEffect to load data synchronously before paint
-  // This prevents the flash of loading screen on navigation
-  useLayoutEffect(() => {
-    if (hasInitialized.current) return
-    hasInitialized.current = true
-    
+  // Load cached data on mount - only runs on client
+  useEffect(() => {
     const cachedShifts = sessionStorage.getItem("cachedShifts")
     const cachedGif = sessionStorage.getItem("cachedGif")
     const savedExpanded = localStorage.getItem("shiftExpandedState")
