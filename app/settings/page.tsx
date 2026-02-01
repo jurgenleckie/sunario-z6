@@ -215,8 +215,8 @@ export default function SettingsPage() {
     return ""
   }
 
-  const handleBack = () => {
-    console.log("[v0] Settings handleBack called")
+  const handleBack = (e: React.MouseEvent) => {
+    e.stopPropagation()
     window.history.back()
   }
 
