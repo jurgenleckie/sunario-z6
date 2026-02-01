@@ -377,15 +377,11 @@ export default function RandomPage() {
 
   const currentShift = shifts?.[activeTab - 1]
 
-  // Show blank screen while hydrating to prevent flash
-  if (!isHydrated) {
-    return <div className="min-h-screen bg-white max-w-[600px] mx-auto" />
-  }
-
+  // Show no shifts page only if genuinely no shifts (after hydration)
   if (!shifts || shifts.length === 0 || !currentShift) {
     return (
       <div
-        className="relative w-full min-h-screen bg-white flex flex-col max-w-[600px] mx-auto"
+        className={`relative w-full min-h-screen bg-white flex flex-col max-w-[600px] mx-auto transition-opacity duration-100 ${!isHydrated ? 'opacity-0' : 'opacity-100'}`}
         style={{ fontFamily: "Inter, sans-serif" }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -570,7 +566,7 @@ export default function RandomPage() {
 
   return (
     <div
-      className="relative w-full min-h-screen overflow-y-auto flex flex-col items-center max-w-[600px] mx-auto"
+      className={`relative w-full min-h-screen overflow-y-auto flex flex-col items-center max-w-[600px] mx-auto transition-opacity duration-100 ${!isHydrated ? 'opacity-0' : 'opacity-100'}`}
       style={{ backgroundColor: "#FFFFFF", fontFamily: "Inter, sans-serif" }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
