@@ -65,7 +65,7 @@ function IOSPicker({ isOpen, onClose, options, selectedValue, onSelect, title }:
 
 export default function SettingsPage() {
   const router = useRouter()
-  const [isExiting, setIsExiting] = useState(false)
+  const [isSlideOut, setIsSlideOut] = useState(false)
 
   const [showRisingShifts, setShowRisingShifts] = useState(() => {
     if (typeof window !== "undefined") {
@@ -218,26 +218,18 @@ export default function SettingsPage() {
 
   const handleBack = (e: React.MouseEvent) => {
     e.preventDefault()
-    setIsExiting(true)
+    setIsSlideOut(true)
     setTimeout(() => {
-      router.back()
-    }, 280)
+      router.push("/")
+    }, 300)
   }
 
   return (
-    <>
-      {/* Shadow overlay for iOS depth effect */}
-      <div 
-        className={`fixed inset-0 bg-black pointer-events-none z-40 max-w-[600px] mx-auto ${
-          isExiting ? "animate-ios-shadow-out" : "animate-ios-shadow-in"
-        }`}
-      />
-      <div 
-        className={`min-h-screen bg-[#EEEEEE] flex flex-col overflow-y-auto max-w-[600px] mx-auto relative z-50 ${
-          isExiting ? "animate-ios-slide-out" : "animate-ios-slide-in"
-        }`}
-        style={{ boxShadow: "-4px 0 16px rgba(0, 0, 0, 0.1)" }}
-      >
+    <div
+      className={`min-h-screen bg-[#EEEEEE] flex flex-col overflow-y-auto max-w-[600px] mx-auto ${
+        isSlideOut ? "animate-slide-out" : "animate-slide-in"
+      }`}
+    >
         <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
         <Link href="/location" className="px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
           Location
@@ -316,59 +308,34 @@ export default function SettingsPage() {
           animation: slide-up 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
-        @keyframes ios-slide-in {
+        @keyframes slide-in {
           from { 
-            transform: translateX(100%);
+            transform: translateX(100%); 
+            opacity: 0.5;
           }
           to { 
-            transform: translateX(0);
+            transform: translateX(0); 
+            opacity: 1;
           }
         }
         
-        @keyframes ios-slide-out {
+        @keyframes slide-out {
           from { 
-            transform: translateX(0);
+            transform: translateX(0); 
+            opacity: 1;
           }
           to { 
-            transform: translateX(100%);
+            transform: translateX(100%); 
+            opacity: 0.5;
           }
         }
         
-        .animate-ios-slide-in {
-          animation: ios-slide-in 350ms cubic-bezier(0.25, 0.1, 0.25, 1);
+        .animate-slide-in {
+          animation: slide-in 300ms cubic-bezier(0, 0, 0.2, 1);
         }
         
-        .animate-ios-slide-out {
-          animation: ios-slide-out 280ms cubic-bezier(0.25, 0.1, 0.25, 1);
-          animation-fill-mode: forwards;
-        }
-        
-        @keyframes ios-shadow-in {
-          from { 
-            opacity: 0.3;
-          }
-          to { 
-            opacity: 0;
-          }
-        }
-        
-        @keyframes ios-shadow-out {
-          from { 
-            opacity: 0;
-          }
-          to { 
-            opacity: 0.3;
-          }
-        }
-        
-        .animate-ios-shadow-in {
-          animation: ios-shadow-in 350ms cubic-bezier(0.25, 0.1, 0.25, 1);
-          animation-fill-mode: forwards;
-        }
-        
-        .animate-ios-shadow-out {
-          animation: ios-shadow-out 280ms cubic-bezier(0.25, 0.1, 0.25, 1);
-          animation-fill-mode: forwards;
+        .animate-slide-out {
+          animation: slide-out 300ms cubic-bezier(0, 0, 0.2, 1);
         }
       `}</style>
 
@@ -688,7 +655,6 @@ export default function SettingsPage() {
           sunario© 2025
         </span>
       </div>
-      </div>
-    </>
+    </div>
   )
 }
