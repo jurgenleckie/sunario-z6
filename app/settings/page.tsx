@@ -215,8 +215,7 @@ export default function SettingsPage() {
     return ""
   }
 
-  const handleBack = (e: React.MouseEvent) => {
-    e.preventDefault()
+  const handleBack = () => {
     router.back()
   }
 
