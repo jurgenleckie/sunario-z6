@@ -231,10 +231,29 @@ export default function RandomPage() {
       setShifts([])
       setRandomGif(getRandomGif())
       localStorage.removeItem("testNoShifts")
+      setLoading(false)
+      return
+    }
+
+    // Check for cached shifts data to prevent regeneration on navigation
+    const cachedShifts = sessionStorage.getItem("cachedShifts")
+    const cachedGif = sessionStorage.getItem("cachedGif")
+    
+    if (cachedShifts !== null && cachedGif) {
+      setShifts(cachedShifts === "null" ? null : JSON.parse(cachedShifts))
+      setRandomGif(cachedGif)
+      setLoading(false)
+      return
     }
 
     const randomShifts = generateRandomShifts()
+    const newGif = getRandomGif()
     setShifts(randomShifts)
+    setRandomGif(newGif)
+    
+    // Cache the data
+    sessionStorage.setItem("cachedShifts", JSON.stringify(randomShifts))
+    sessionStorage.setItem("cachedGif", newGif)
     setLoading(false)
   }, [])
 
@@ -243,8 +262,12 @@ export default function RandomPage() {
     setActiveTab(1)
     setTimeout(() => {
       const randomShifts = generateRandomShifts()
+      const newGif = getRandomGif()
       setShifts(randomShifts)
-      setRandomGif(getRandomGif())
+      setRandomGif(newGif)
+      // Update the cache
+      sessionStorage.setItem("cachedShifts", JSON.stringify(randomShifts))
+      sessionStorage.setItem("cachedGif", newGif)
       setLoading(false)
     }, 300)
   }
@@ -378,8 +401,11 @@ export default function RandomPage() {
           </button>
           <button
             onClick={() => {
+              const newGif = getRandomGif()
               setShifts([])
-              setRandomGif(getRandomGif())
+              setRandomGif(newGif)
+              sessionStorage.setItem("cachedShifts", JSON.stringify([]))
+              sessionStorage.setItem("cachedGif", newGif)
             }}
             className="px-3 py-1 bg-green-600 text-white text-xs rounded whitespace-nowrap"
           >
@@ -560,8 +586,11 @@ export default function RandomPage() {
         </button>
         <button
           onClick={() => {
+            const newGif = getRandomGif()
             setShifts([])
-            setRandomGif(getRandomGif())
+            setRandomGif(newGif)
+            sessionStorage.setItem("cachedShifts", JSON.stringify([]))
+            sessionStorage.setItem("cachedGif", newGif)
           }}
           className="px-3 py-1 bg-green-600 text-white text-xs rounded whitespace-nowrap"
         >
