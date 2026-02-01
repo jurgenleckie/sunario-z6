@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useSyncExternalStore } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -129,26 +129,64 @@ function generateRandomShifts() {
   return shifts
 }
 
+// Helper to read sessionStorage synchronously
+function getSessionStorageShifts() {
+  if (typeof window === "undefined") return null
+  const cached = sessionStorage.getItem("cachedShifts")
+  if (cached === null) return undefined // undefined means not initialized
+  if (cached === "null") return null
+  return JSON.parse(cached)
+}
+
+function getSessionStorageGif() {
+  if (typeof window === "undefined") return ""
+  return sessionStorage.getItem("cachedGif") || ""
+}
+
+function subscribeToStorage(callback: () => void) {
+  window.addEventListener("storage", callback)
+  return () => window.removeEventListener("storage", callback)
+}
+
 export default function RandomPage() {
   const router = useRouter()
   
-  // All state starts with consistent server-safe defaults
-  const [shifts, setShifts] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  // Read cached data synchronously to avoid flash
+  const cachedShifts = useSyncExternalStore(
+    subscribeToStorage,
+    getSessionStorageShifts,
+    () => undefined // server snapshot
+  )
+  const cachedGif = useSyncExternalStore(
+    subscribeToStorage,
+    getSessionStorageGif,
+    () => "" // server snapshot
+  )
+  
+  // State for when we need to update
+  const [shifts, setShifts] = useState<any>(cachedShifts)
+  const [randomGif, setRandomGif] = useState<string>(cachedGif)
+  const [loading, setLoading] = useState(cachedShifts === undefined)
   const [activeTab, setActiveTab] = useState(1)
   const [isExpanded, setIsExpanded] = useState(false)
-  const [isHydrated, setIsHydrated] = useState(false)
-  const [randomGif, setRandomGif] = useState<string>("")
+  const [isHydrated, setIsHydrated] = useState(cachedShifts !== undefined)
   const currentYear = new Date().getFullYear()
   
-  // Load cached data on mount - only runs on client
+  // Initialize on first client render if no cache exists
   useEffect(() => {
-    const cachedShifts = sessionStorage.getItem("cachedShifts")
-    const cachedGif = sessionStorage.getItem("cachedGif")
+    // Load expanded state
     const savedExpanded = localStorage.getItem("shiftExpandedState")
-    
     if (savedExpanded === "true") {
       setIsExpanded(true)
+    }
+    
+    // If already have cached data, we're done
+    if (cachedShifts !== undefined) {
+      setShifts(cachedShifts)
+      setRandomGif(cachedGif)
+      setLoading(false)
+      setIsHydrated(true)
+      return
     }
     
     // Check for test mode
@@ -165,14 +203,6 @@ export default function RandomPage() {
       return
     }
     
-    if (cachedShifts !== null && cachedGif) {
-      setShifts(cachedShifts === "null" ? null : JSON.parse(cachedShifts))
-      setRandomGif(cachedGif)
-      setLoading(false)
-      setIsHydrated(true)
-      return
-    }
-    
     // Generate new data only on first visit
     const randomShifts = generateRandomShifts()
     const newGif = getRandomGif()
@@ -182,7 +212,7 @@ export default function RandomPage() {
     sessionStorage.setItem("cachedGif", newGif)
     setLoading(false)
     setIsHydrated(true)
-  }, [])
+  }, [cachedShifts, cachedGif])
 
   const [pullDistance, setPullDistance] = useState(0)
   const [isPulling, setIsPulling] = useState(false)
