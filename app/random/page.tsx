@@ -4,13 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
-// Module-level cache that persists across component remounts during navigation
-let moduleCache: {
-  shifts: any;
-  gif: string;
-  hasData: boolean;
-} | null = null;
+import { useShifts } from "@/contexts/shifts-context"
 
 const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 const fullDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -138,17 +132,14 @@ function generateRandomShifts() {
 
 export default function RandomPage() {
   const router = useRouter()
+  const { shifts, setShifts, randomGif, setRandomGif, isInitialized, setIsInitialized } = useShifts()
   
-  // Initialize from module cache if available (prevents flash on navigation)
-  const [shifts, setShifts] = useState<any>(moduleCache?.shifts ?? null)
-  const [randomGif, setRandomGif] = useState<string>(moduleCache?.gif ?? "")
-  const [loading, setLoading] = useState(!moduleCache?.hasData)
+  const [loading, setLoading] = useState(!isInitialized)
   const [activeTab, setActiveTab] = useState(1)
   const [isExpanded, setIsExpanded] = useState(false)
-  const [isHydrated, setIsHydrated] = useState(moduleCache?.hasData ?? false)
   const currentYear = new Date().getFullYear()
   
-  // Initialize on mount
+  // Initialize on mount - only runs once across navigations thanks to context
   useEffect(() => {
     // Load expanded state
     const savedExpanded = localStorage.getItem("shiftExpandedState")
@@ -156,23 +147,9 @@ export default function RandomPage() {
       setIsExpanded(true)
     }
     
-    // If we already have module cache, we're done
-    if (moduleCache?.hasData) {
-      return
-    }
-    
-    // Check for sessionStorage cached data
-    const cachedShifts = sessionStorage.getItem("cachedShifts")
-    const cachedGif = sessionStorage.getItem("cachedGif")
-    
-    if (cachedShifts !== null && cachedGif) {
-      const parsedShifts = cachedShifts === "null" ? null : JSON.parse(cachedShifts)
-      setShifts(parsedShifts)
-      setRandomGif(cachedGif)
+    // If already initialized via context, we're done
+    if (isInitialized) {
       setLoading(false)
-      setIsHydrated(true)
-      // Store in module cache for next navigation
-      moduleCache = { shifts: parsedShifts, gif: cachedGif, hasData: true }
       return
     }
     
@@ -182,12 +159,9 @@ export default function RandomPage() {
       const newGif = getRandomGif()
       setShifts([])
       setRandomGif(newGif)
-      sessionStorage.setItem("cachedShifts", JSON.stringify([]))
-      sessionStorage.setItem("cachedGif", newGif)
       localStorage.removeItem("testNoShifts")
       setLoading(false)
-      setIsHydrated(true)
-      moduleCache = { shifts: [], gif: newGif, hasData: true }
+      setIsInitialized(true)
       return
     }
     
@@ -196,12 +170,9 @@ export default function RandomPage() {
     const newGif = getRandomGif()
     setShifts(randomShifts)
     setRandomGif(newGif)
-    sessionStorage.setItem("cachedShifts", JSON.stringify(randomShifts))
-    sessionStorage.setItem("cachedGif", newGif)
     setLoading(false)
-    setIsHydrated(true)
-    moduleCache = { shifts: randomShifts, gif: newGif, hasData: true }
-  }, [])
+    setIsInitialized(true)
+  }, [isInitialized, setShifts, setRandomGif, setIsInitialized])
 
   const [pullDistance, setPullDistance] = useState(0)
   const [isPulling, setIsPulling] = useState(false)
@@ -280,12 +251,12 @@ export default function RandomPage() {
 
 
 
-  // Save expanded state when it changes (after hydration)
+  // Save expanded state when it changes (after initialization)
   useEffect(() => {
-    if (isHydrated) {
+    if (isInitialized) {
       localStorage.setItem("shiftExpandedState", String(isExpanded))
     }
-  }, [isExpanded, isHydrated])
+  }, [isExpanded, isInitialized])
 
   const handleRegenerate = () => {
     setLoading(true)
@@ -295,10 +266,6 @@ export default function RandomPage() {
       const newGif = getRandomGif()
       setShifts(randomShifts)
       setRandomGif(newGif)
-      // Update both caches
-      sessionStorage.setItem("cachedShifts", JSON.stringify(randomShifts))
-      sessionStorage.setItem("cachedGif", newGif)
-      moduleCache = { shifts: randomShifts, gif: newGif, hasData: true }
       setLoading(false)
     }, 300)
   }
@@ -428,9 +395,6 @@ export default function RandomPage() {
               const newGif = getRandomGif()
               setShifts([])
               setRandomGif(newGif)
-              sessionStorage.setItem("cachedShifts", JSON.stringify([]))
-              sessionStorage.setItem("cachedGif", newGif)
-              moduleCache = { shifts: [], gif: newGif, hasData: true }
             }}
             className="px-3 py-1 bg-green-600 text-white text-xs rounded whitespace-nowrap"
           >
@@ -614,9 +578,6 @@ export default function RandomPage() {
             const newGif = getRandomGif()
             setShifts([])
             setRandomGif(newGif)
-            sessionStorage.setItem("cachedShifts", JSON.stringify([]))
-            sessionStorage.setItem("cachedGif", newGif)
-            moduleCache = { shifts: [], gif: newGif, hasData: true }
           }}
           className="px-3 py-1 bg-green-600 text-white text-xs rounded whitespace-nowrap"
         >

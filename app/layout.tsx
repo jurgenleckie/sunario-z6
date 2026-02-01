@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono, Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { ShiftsProvider } from "@/contexts/shifts-context"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -39,7 +40,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <ShiftsProvider>
+          {children}
+        </ShiftsProvider>
         <Analytics />
       </body>
     </html>
