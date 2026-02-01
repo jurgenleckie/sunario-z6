@@ -215,11 +215,6 @@ export default function SettingsPage() {
     return ""
   }
 
-  const handleBack = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    window.history.back()
-  }
-
   return (
     <div className="min-h-screen bg-[#EEEEEE] flex flex-col overflow-y-auto max-w-[600px] mx-auto">
         <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
@@ -334,9 +329,9 @@ export default function SettingsPage() {
       <div className="flex flex-col px-3 sm:px-5 pb-0 flex-1" style={{ paddingTop: "36px" }}>
         <div className="max-w-[350px] mx-auto w-full flex flex-col gap-6 flex-1">
           <div className="flex items-center justify-between" style={{ height: "40px", padding: "12px 0" }}>
-            <button onClick={handleBack} className="flex items-center justify-center w-8 h-10">
+            <Link href="/random" className="flex items-center justify-center w-8 h-10">
               <ChevronLeft className="w-6 h-6 text-[#424242]" strokeWidth={2.4} />
-            </button>
+            </Link>
             <div className="flex-1 flex items-center justify-center">
               <h1
                 className="text-base font-bold tracking-tight text-[#424242]"

@@ -379,18 +379,9 @@ export default function RandomPage() {
     )
   }
 
-  // Show minimal loading state only before hydration completes
-  if (!isHydrated) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center max-w-[600px] mx-auto">
-        <div className="text-lg text-gray-600">Loading...</div>
-      </div>
-    )
-  }
-
   const currentShift = shifts?.[activeTab - 1]
 
-  if (!shifts || shifts.length === 0 || !currentShift) {
+  if (!isHydrated || !shifts || shifts.length === 0 || !currentShift) {
     return (
       <div
         className="relative w-full min-h-screen bg-white flex flex-col max-w-[600px] mx-auto"
