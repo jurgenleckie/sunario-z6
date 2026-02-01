@@ -132,32 +132,13 @@ function generateRandomShifts() {
 export default function RandomPage() {
   const router = useRouter()
   
-  // Check for cached data synchronously to prevent flash on navigation
-  const getInitialShifts = () => {
-    if (typeof window === "undefined") return null
-    const cached = sessionStorage.getItem("cachedShifts")
-    if (cached !== null) {
-      return cached === "null" ? null : JSON.parse(cached)
-    }
-    return null
-  }
-  
-  const getInitialGif = () => {
-    if (typeof window === "undefined") return ""
-    return sessionStorage.getItem("cachedGif") || ""
-  }
-  
-  const getInitialHydrated = () => {
-    if (typeof window === "undefined") return false
-    return sessionStorage.getItem("cachedShifts") !== null
-  }
-  
-  const [shifts, setShifts] = useState<any>(getInitialShifts)
+  // All state starts with consistent server-safe defaults
+  const [shifts, setShifts] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState(1)
   const [isExpanded, setIsExpanded] = useState(false)
-  const [isHydrated, setIsHydrated] = useState(getInitialHydrated)
-  const [randomGif, setRandomGif] = useState<string>(getInitialGif)
+  const [isHydrated, setIsHydrated] = useState(false)
+  const [randomGif, setRandomGif] = useState<string>("")
   const currentYear = new Date().getFullYear()
 
   const [pullDistance, setPullDistance] = useState(0)
@@ -237,21 +218,24 @@ export default function RandomPage() {
 
   // Hydration effect - runs once on mount to load cached data
   useEffect(() => {
+    console.log("[v0] Hydration effect running, isHydrated:", isHydrated)
+    
     // Load expanded state from localStorage
     const savedExpanded = localStorage.getItem("shiftExpandedState")
     if (savedExpanded === "true") {
       setIsExpanded(true)
     }
 
-    // If already hydrated from initial state, skip
-    if (isHydrated) {
-      setLoading(false)
-      return
-    }
+    // Check for cached data first
+    const cachedShifts = sessionStorage.getItem("cachedShifts")
+    const cachedGif = sessionStorage.getItem("cachedGif")
+    
+    console.log("[v0] Cache check - cachedShifts:", cachedShifts !== null, "cachedGif:", !!cachedGif)
 
     // Check for test mode
     const testNoShifts = localStorage.getItem("testNoShifts")
     if (testNoShifts === "true") {
+      console.log("[v0] Test mode - no shifts")
       setShifts([])
       const newGif = getRandomGif()
       setRandomGif(newGif)
@@ -263,7 +247,18 @@ export default function RandomPage() {
       return
     }
 
+    // If we have cached data, use it
+    if (cachedShifts !== null && cachedGif) {
+      console.log("[v0] Using cached data")
+      setShifts(cachedShifts === "null" ? null : JSON.parse(cachedShifts))
+      setRandomGif(cachedGif)
+      setLoading(false)
+      setIsHydrated(true)
+      return
+    }
+
     // Generate new data only on first visit (no cache exists)
+    console.log("[v0] Generating new data")
     const randomShifts = generateRandomShifts()
     const newGif = getRandomGif()
     setShifts(randomShifts)

@@ -216,7 +216,8 @@ export default function SettingsPage() {
   }
 
   const handleBack = () => {
-    router.back()
+    console.log("[v0] Settings handleBack called")
+    window.history.back()
   }
 
   return (
