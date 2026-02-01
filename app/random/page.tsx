@@ -5,6 +5,13 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
+// Module-level cache that persists across component remounts during navigation
+let moduleCache: {
+  shifts: any;
+  gif: string;
+  hasData: boolean;
+} | null = null;
+
 const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 const fullDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
@@ -132,12 +139,13 @@ function generateRandomShifts() {
 export default function RandomPage() {
   const router = useRouter()
   
-  const [shifts, setShifts] = useState<any>(null)
-  const [randomGif, setRandomGif] = useState<string>("")
-  const [loading, setLoading] = useState(true)
+  // Initialize from module cache if available (prevents flash on navigation)
+  const [shifts, setShifts] = useState<any>(moduleCache?.shifts ?? null)
+  const [randomGif, setRandomGif] = useState<string>(moduleCache?.gif ?? "")
+  const [loading, setLoading] = useState(!moduleCache?.hasData)
   const [activeTab, setActiveTab] = useState(1)
   const [isExpanded, setIsExpanded] = useState(false)
-  const [isHydrated, setIsHydrated] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(moduleCache?.hasData ?? false)
   const currentYear = new Date().getFullYear()
   
   // Initialize on mount
@@ -148,15 +156,23 @@ export default function RandomPage() {
       setIsExpanded(true)
     }
     
-    // Check for cached data
+    // If we already have module cache, we're done
+    if (moduleCache?.hasData) {
+      return
+    }
+    
+    // Check for sessionStorage cached data
     const cachedShifts = sessionStorage.getItem("cachedShifts")
     const cachedGif = sessionStorage.getItem("cachedGif")
     
     if (cachedShifts !== null && cachedGif) {
-      setShifts(cachedShifts === "null" ? null : JSON.parse(cachedShifts))
+      const parsedShifts = cachedShifts === "null" ? null : JSON.parse(cachedShifts)
+      setShifts(parsedShifts)
       setRandomGif(cachedGif)
       setLoading(false)
       setIsHydrated(true)
+      // Store in module cache for next navigation
+      moduleCache = { shifts: parsedShifts, gif: cachedGif, hasData: true }
       return
     }
     
@@ -171,6 +187,7 @@ export default function RandomPage() {
       localStorage.removeItem("testNoShifts")
       setLoading(false)
       setIsHydrated(true)
+      moduleCache = { shifts: [], gif: newGif, hasData: true }
       return
     }
     
@@ -183,6 +200,7 @@ export default function RandomPage() {
     sessionStorage.setItem("cachedGif", newGif)
     setLoading(false)
     setIsHydrated(true)
+    moduleCache = { shifts: randomShifts, gif: newGif, hasData: true }
   }, [])
 
   const [pullDistance, setPullDistance] = useState(0)
@@ -277,9 +295,10 @@ export default function RandomPage() {
       const newGif = getRandomGif()
       setShifts(randomShifts)
       setRandomGif(newGif)
-      // Update the cache
+      // Update both caches
       sessionStorage.setItem("cachedShifts", JSON.stringify(randomShifts))
       sessionStorage.setItem("cachedGif", newGif)
+      moduleCache = { shifts: randomShifts, gif: newGif, hasData: true }
       setLoading(false)
     }, 300)
   }
@@ -377,11 +396,11 @@ export default function RandomPage() {
 
   const currentShift = shifts?.[activeTab - 1]
 
-  // Show no shifts page only if genuinely no shifts (after hydration)
+  // Show no shifts page only if genuinely no shifts
   if (!shifts || shifts.length === 0 || !currentShift) {
     return (
       <div
-        className={`relative w-full min-h-screen bg-white flex flex-col max-w-[600px] mx-auto transition-opacity duration-100 ${!isHydrated ? 'opacity-0' : 'opacity-100'}`}
+        className="relative w-full min-h-screen bg-white flex flex-col max-w-[600px] mx-auto"
         style={{ fontFamily: "Inter, sans-serif" }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -411,6 +430,7 @@ export default function RandomPage() {
               setRandomGif(newGif)
               sessionStorage.setItem("cachedShifts", JSON.stringify([]))
               sessionStorage.setItem("cachedGif", newGif)
+              moduleCache = { shifts: [], gif: newGif, hasData: true }
             }}
             className="px-3 py-1 bg-green-600 text-white text-xs rounded whitespace-nowrap"
           >
@@ -566,7 +586,7 @@ export default function RandomPage() {
 
   return (
     <div
-      className={`relative w-full min-h-screen overflow-y-auto flex flex-col items-center max-w-[600px] mx-auto transition-opacity duration-100 ${!isHydrated ? 'opacity-0' : 'opacity-100'}`}
+      className="relative w-full min-h-screen overflow-y-auto flex flex-col items-center max-w-[600px] mx-auto"
       style={{ backgroundColor: "#FFFFFF", fontFamily: "Inter, sans-serif" }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -596,6 +616,7 @@ export default function RandomPage() {
             setRandomGif(newGif)
             sessionStorage.setItem("cachedShifts", JSON.stringify([]))
             sessionStorage.setItem("cachedGif", newGif)
+            moduleCache = { shifts: [], gif: newGif, hasData: true }
           }}
           className="px-3 py-1 bg-green-600 text-white text-xs rounded whitespace-nowrap"
         >
