@@ -167,7 +167,7 @@ export default function RandomPage() {
       const cachedGif = sessionStorage.getItem("cachedGif")
       if (cachedGif) return cachedGif
     }
-    return getRandomGif()
+    return ""
   })
 
   const handleStart = (clientY: number) => {
@@ -276,6 +276,15 @@ export default function RandomPage() {
     sessionStorage.setItem("cachedGif", newGif)
     setLoading(false)
   }, [])
+
+  // Set initial gif on client if not cached (handles SSR case)
+  useEffect(() => {
+    if (!randomGif) {
+      const newGif = getRandomGif()
+      setRandomGif(newGif)
+      sessionStorage.setItem("cachedGif", newGif)
+    }
+  }, [randomGif])
 
   const handleRegenerate = () => {
     setLoading(true)
