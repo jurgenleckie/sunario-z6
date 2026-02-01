@@ -217,7 +217,7 @@ export default function SettingsPage() {
 
   const handleBack = (e: React.MouseEvent) => {
     e.preventDefault()
-    router.push("/")
+    router.push("/random")
   }
 
   return (
